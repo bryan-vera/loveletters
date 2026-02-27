@@ -1,0 +1,2 @@
+# Keep sensitive config files out of version control
+src/js/config.js

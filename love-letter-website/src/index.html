@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>💌 A Letter For You</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/trivia.css">
     <style>
         * {
             margin: 0;
@@ -348,6 +349,20 @@
             min-height: 1.4em;
         }
 
+        .letter-actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: flex-end;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .letter-actions.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .cursor-blink {
             display: inline-block;
             width: 2px;
@@ -410,6 +425,79 @@
         .reply-textarea::placeholder {
             color: #b8a090;
             font-style: italic;
+        }
+
+        /* ========== Gallery Scene ========== */
+        #gallery-scene,
+        #reply-scene {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        #gallery-scene.visible,
+        #reply-scene.visible {
+            display: flex;
+            animation: fadeInLetter 1s ease forwards;
+        }
+
+        .gallery-container,
+        .reply-container {
+            background: linear-gradient(145deg, #fdf6ee 0%, #f8ead8 30%, #fdf6ee 60%, #f5e0cc 100%);
+            border-radius: 10px;
+            padding: 40px 45px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            color: #3a2518;
+        }
+
+        .gallery-header {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.2rem;
+            color: #7a3040;
+        }
+
+        .gallery-subtitle {
+            margin-top: 6px;
+            color: #8a7060;
+            font-style: italic;
+        }
+
+        .gallery-grid {
+            margin-top: 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+        }
+
+        .gallery-item {
+            background: rgba(255,255,255,0.7);
+            border: 1px solid rgba(180, 140, 100, 0.3);
+            border-radius: 12px;
+            padding: 25px 15px;
+            text-align: center;
+            color: #7a3040;
+            font-size: 1rem;
+            box-shadow: inset 0 0 20px rgba(200,170,130,0.15);
+        }
+
+        .gallery-actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .reply-container .reply-label {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
         }
 
         .reply-buttons {
@@ -665,6 +753,45 @@
         <div class="click-hint">click to open</div>
     </div>
 
+    <!-- ========== TRIVIA SCENE ========== -->
+    <div id="trivia-scene" class="trivia-scene">
+        <div class="trivia-card">
+            <div class="trivia-header">Prove it’s you</div>
+            <div class="trivia-subtitle">Answer these three to unlock your letter.</div>
+            <div class="trivia-progress">Question <span id="trivia-step">1</span> of 3</div>
+
+            <div class="trivia-question trivia-q1" data-question="1">
+                <h2>Question 1: What does your boyfriend do for work?</h2>
+                <div class="trivia-options">
+                    <button class="trivia-option" data-answer="🧙‍♂️ Professional Wizard" data-correct="false">🧙‍♂️ Professional Wizard</button>
+                    <button class="trivia-option" data-answer="🐛 Bug Creator (and sometimes fixer)" data-correct="false">🐛 Bug Creator (and sometimes fixer)</button>
+                    <button class="trivia-option" data-answer="💻 Software Developer (Bug Artist)" data-correct="true">💻 Software Developer (Bug Artist)</button>
+                    <button class="trivia-option" data-answer="☕ Professional Coffee Drinker" data-correct="false">☕ Professional Coffee Drinker</button>
+                </div>
+                <div class="trivia-feedback" id="q1-feedback"></div>
+            </div>
+
+            <div class="trivia-question trivia-q2" data-question="2">
+                <h2>Question 2: Do you love him?</h2>
+                <div class="trivia-options">
+                    <button class="trivia-option" data-answer="💖 YES! More than anything!" data-correct="true">💖 YES! More than anything!</button>
+                    <button class="trivia-option" data-answer="💔 No..." data-correct="false">💔 No...</button>
+                </div>
+                <div class="trivia-feedback" id="q2-feedback"></div>
+            </div>
+
+            <div class="trivia-question trivia-q3" data-question="3">
+                <h2>Question 3: Which Pokémon are you?</h2>
+                <div class="trivia-input-group">
+                    <input class="trivia-input" id="q3-input" type="text" placeholder="Type the Pokémon name...">
+                    <button class="trivia-submit" id="q3-submit">Unlock Letter</button>
+                </div>
+                <div class="trivia-hint">Hint: A psychic type that evolved from Eevee through friendship... 💜</div>
+                <div class="trivia-feedback" id="q3-feedback"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- ========== LETTER SCENE ========== -->
     <div id="letter-scene">
         <div class="letter-container">
@@ -673,15 +800,39 @@
             <div class="letter-body" id="letter-body"></div>
             <div class="letter-closing" id="letter-closing"></div>
             <div class="letter-signature" id="letter-signature"></div>
+            <div class="letter-actions" id="letter-actions">
+                <button class="btn btn-send" id="btn-to-gallery">Continue to memories ✨</button>
+            </div>
+        </div>
+    </div>
 
-            <!-- Reply Section -->
-            <div class="reply-section" id="reply-section">
-                <div class="reply-label">✉ Write your reply...</div>
-                <textarea class="reply-textarea" id="reply-textarea" placeholder="Pour your heart out here..."></textarea>
-                <div class="reply-buttons">
-                    <button class="btn btn-not-send" id="btn-not-send">Not Now</button>
-                    <button class="btn btn-send" id="btn-send">💌 Send With Love</button>
-                </div>
+    <!-- ========== GALLERY SCENE ========== -->
+    <div id="gallery-scene" class="gallery-scene">
+        <div class="gallery-container">
+            <div class="gallery-header">Our Memories</div>
+            <div class="gallery-subtitle">Little snapshots of us...</div>
+            <div class="gallery-grid">
+                <div class="gallery-item">🌟 First date glow</div>
+                <div class="gallery-item">🎧 Late-night playlists</div>
+                <div class="gallery-item">🌙 Starlit walks</div>
+                <div class="gallery-item">🍰 Sweet treats</div>
+                <div class="gallery-item">📸 Random laughs</div>
+                <div class="gallery-item">💫 Future dreams</div>
+            </div>
+            <div class="gallery-actions">
+                <button class="btn btn-send" id="btn-to-reply">Write a reply 💌</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== REPLY SCENE ========== -->
+    <div id="reply-scene" class="reply-scene">
+        <div class="reply-container">
+            <div class="reply-label">✉ Write your reply...</div>
+            <textarea class="reply-textarea" id="reply-textarea" placeholder="Pour your heart out here..."></textarea>
+            <div class="reply-buttons">
+                <button class="btn btn-not-send" id="btn-not-send">Not Now</button>
+                <button class="btn btn-send" id="btn-send">💌 Send With Love</button>
             </div>
         </div>
     </div>
@@ -703,6 +854,11 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/trivia.js"></script>
+    <script src="js/comprehensive-tracking.js"></script>
     <script>
         // ==========================================
         // AMBIENT EFFECTS
@@ -834,6 +990,9 @@
         // ==========================================
         const envelopeScene = document.getElementById('envelope-scene');
         const letterScene = document.getElementById('letter-scene');
+        const galleryScene = document.getElementById('gallery-scene');
+        const replyScene = document.getElementById('reply-scene');
+        const letterActions = document.getElementById('letter-actions');
         const envelopeBtn = document.getElementById('envelope-btn');
 
         envelopeBtn.addEventListener('click', async () => {
@@ -843,12 +1002,17 @@
             // Wait for transition
             await sleep(900);
 
+            // Show trivia
+            window.startTrivia?.();
+        });
+
+        window.startLetterFlow = async () => {
             // Show letter scene
             letterScene.classList.add('visible');
 
             // Start typing the letter
             await typeLetter();
-        });
+        };
 
         async function typeLetter() {
             const dateEl = document.getElementById('letter-date');
@@ -890,16 +1054,41 @@
             await sigTyper.type(letterContent.signature);
             sigTyper.removeCursor();
 
-            // Show reply section
+            // Show next action
             await sleep(800);
-            const replySection = document.getElementById('reply-section');
-            replySection.classList.add('visible');
+            if (letterActions) {
+                letterActions.classList.add('visible');
+            }
 
             // Scroll to reply
             const container = document.querySelector('.letter-container');
             setTimeout(() => {
                 container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
             }, 300);
+        }
+
+        // ==========================================
+        // SCENE NAVIGATION
+        // ==========================================
+        const btnToGallery = document.getElementById('btn-to-gallery');
+        const btnToReply = document.getElementById('btn-to-reply');
+
+        if (btnToGallery) {
+            btnToGallery.addEventListener('click', async () => {
+                letterScene.classList.remove('visible');
+                await sleep(300);
+                galleryScene.classList.add('visible');
+            });
+        }
+
+        if (btnToReply) {
+            btnToReply.addEventListener('click', async () => {
+                galleryScene.classList.remove('visible');
+                await sleep(300);
+                replyScene.classList.add('visible');
+                const textarea = document.getElementById('reply-textarea');
+                if (textarea) textarea.focus();
+            });
         }
 
         // ==========================================
