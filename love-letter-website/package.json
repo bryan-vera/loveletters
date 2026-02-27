@@ -1,0 +1,22 @@
+{
+  "name": "love-letter-website",
+  "version": "1.0.0",
+  "description": "A romantic love letter website with typing animation and envelope interaction.",
+  "main": "src/js/main.js",
+  "scripts": {
+    "start": "live-server src"
+  },
+  "keywords": [
+    "love",
+    "letter",
+    "romantic",
+    "animation",
+    "website"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}

@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💌 A Letter For You</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: radial-gradient(ellipse at bottom, #1b0a2e 0%, #0d0015 60%, #000 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #f5e6d3;
+        }
+
+        /* ========== Floating Hearts ========== */
+        .hearts-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: -50px;
+            font-size: 20px;
+            opacity: 0;
+            animation: floatHeart linear infinite;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-110vh) rotate(720deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* ========== Particles / Stars ========== */
+        .particles-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px; height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle ease-in-out infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.1; transform: scale(0.5); }
+            100% { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        /* ========== Rose Petals ========== */
+        .petal {
+            position: fixed;
+            width: 12px; height: 16px;
+            background: radial-gradient(ellipse, #e74c6f, #c0392b);
+            border-radius: 50% 50% 50% 0;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 0;
+            animation: fallPetal linear infinite;
+        }
+
+        @keyframes fallPetal {
+            0% {
+                transform: translateY(-10vh) rotate(0deg) translateX(0);
+                opacity: 0;
+            }
+            10% { opacity: 0.5; }
+            100% {
+                transform: translateY(110vh) rotate(360deg) translateX(80px);
+                opacity: 0;
+            }
+        }
+
+        /* ========== Envelope Scene ========== */
+        #envelope-scene {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        #envelope-scene.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+
+        .envelope-prompt {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2rem;
+            color: #e8a0bf;
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease forwards;
+            text-shadow: 0 0 20px rgba(232, 160, 191, 0.5);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .envelope-wrapper {
+            cursor: pointer;
+            animation: envelopeFloat 3s ease-in-out infinite;
+            filter: drop-shadow(0 10px 40px rgba(200, 80, 120, 0.4));
+            transition: transform 0.3s ease;
+        }
+
+        .envelope-wrapper:hover {
+            transform: scale(1.08);
+            filter: drop-shadow(0 15px 50px rgba(200, 80, 120, 0.7));
+        }
+
+        @keyframes envelopeFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .envelope-svg {
+            width: 220px;
+            height: 160px;
+        }
+
+        .envelope-body {
+            fill: #f7e4d4;
+            stroke: #d4a88c;
+            stroke-width: 2;
+        }
+
+        .envelope-flap {
+            fill: #f0d0b8;
+            stroke: #d4a88c;
+            stroke-width: 2;
+            transform-origin: top center;
+            transition: transform 0.6s ease;
+        }
+
+        .envelope-wrapper:hover .envelope-flap {
+            transform: rotateX(40deg);
+        }
+
+        .envelope-heart {
+            fill: #e74c6f;
+            animation: heartPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartPulse {
+            0%, 100% { transform: scale(1) translate(88px, 70px); }
+            50% { transform: scale(1.15) translate(88px, 70px); }
+        }
+
+        .envelope-seal {
+            fill: #c0392b;
+            opacity: 0.9;
+        }
+
+        .click-hint {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.95rem;
+            color: #b88a9a;
+            margin-top: 20px;
+            animation: pulse 2s ease-in-out infinite;
+            letter-spacing: 2px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* ========== Letter Scene ========== */
+        #letter-scene {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        #letter-scene.visible {
+            display: flex;
+            animation: fadeInLetter 1.2s ease forwards;
+        }
+
+        @keyframes fadeInLetter {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .letter-container {
+            background: linear-gradient(145deg, #fdf6ee 0%, #f8ead8 30%, #fdf6ee 60%, #f5e0cc 100%);
+            border-radius: 8px;
+            padding: 50px 55px;
+            max-width: 650px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(180,140,100,0.3),
+                inset 0 0 80px rgba(200,170,130,0.15);
+            position: relative;
+            color: #3a2518;
+        }
+
+        .letter-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                transparent,
+                transparent 31px,
+                rgba(180, 160, 140, 0.15) 31px,
+                rgba(180, 160, 140, 0.15) 32px
+            );
+            pointer-events: none;
+            border-radius: 8px;
+        }
+
+        .letter-container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 40px;
+            width: 1px;
+            height: 100%;
+            background: rgba(200, 100, 100, 0.2);
+            pointer-events: none;
+        }
+
+        .letter-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .letter-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .letter-container::-webkit-scrollbar-thumb {
+            background: #d4a88c;
+            border-radius: 3px;
+        }
+
+        .letter-date {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.9rem;
+            text-align: right;
+            color: #8a7060;
+            font-style: italic;
+            margin-bottom: 25px;
+            min-height: 1.4em;
+        }
+
+        .letter-greeting {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.2rem;
+            color: #7a3040;
+            margin-bottom: 25px;
+            min-height: 1.4em;
+        }
+
+        .letter-body p {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            line-height: 32px;
+            /* font-size: 1.15rem;
+            line-height: 2.05; */
+            margin-bottom: 18px;
+            color: #3a2518;
+
+            letter-spacing: .015em;
+            word-spacing: .02em;
+
+            hyphens:auto;
+        }
+ 
+        .justified-finished {
+            text-align: justify;
+            text-justify: inter-word;
+        }
+        
+        /* .letter-body p {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15rem;
+            line-height: 2;
+            margin-bottom: 18px;
+            color: #3a2518;
+            min-height: 1.4em;
+        } */
+
+        
+        .letter-closing {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: #7a3040;
+            margin-top: 30px;
+            text-align: right;
+            min-height: 1.4em;
+        }
+
+        .letter-signature {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2rem;
+            color: #7a3040;
+            text-align: right;
+            margin-top: 5px;
+            min-height: 1.4em;
+        }
+
+        .cursor-blink {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: #7a3040;
+            margin-left: 2px;
+            animation: blink 0.7s step-end infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* ========== Reply Section ========== */
+        .reply-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px dashed rgba(180, 140, 100, 0.4);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .reply-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reply-label {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4rem;
+            color: #7a3040;
+            margin-bottom: 15px;
+        }
+
+        .reply-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 18px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: #3a2518;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(180, 140, 100, 0.4);
+            border-radius: 6px;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            line-height: 1.8;
+        }
+
+        .reply-textarea:focus {
+            border-color: #c0846a;
+            box-shadow: 0 0 15px rgba(200, 130, 100, 0.2);
+        }
+
+        .reply-textarea::placeholder {
+            color: #b8a090;
+            font-style: italic;
+        }
+
+        .reply-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 12px 35px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+        }
+
+        .btn:active::after {
+            width: 200px;
+            height: 200px;
+        }
+
+        .btn-send {
+            background: linear-gradient(135deg, #c0392b, #e74c6f);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(200, 60, 80, 0.4);
+        }
+
+        .btn-send:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(200, 60, 80, 0.6);
+        }
+
+        .btn-not-send {
+            background: transparent;
+            color: #8a7060;
+            border: 1px solid rgba(180, 140, 100, 0.5);
+        }
+
+        .btn-not-send:hover {
+            background: rgba(180, 140, 100, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* ========== Confirmation Overlay ========== */
+        .confirmation-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .confirmation-overlay.visible {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .confirmation-box {
+            text-align: center;
+            padding: 50px;
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .confirmation-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: heartBeat 1s ease infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.25); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.15); }
+            60% { transform: scale(1); }
+        }
+
+        .confirmation-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.5rem;
+            color: #e8a0bf;
+            text-shadow: 0 0 30px rgba(232, 160, 191, 0.5);
+        }
+
+        .confirmation-sub {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: #b88a9a;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        /* ========== Ambient glow ========== */
+        .ambient-glow {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(80px);
+        }
+
+        .glow-1 {
+            width: 400px; height: 400px;
+            background: rgba(180, 50, 80, 0.08);
+            top: -100px; right: -100px;
+            animation: glowMove1 8s ease-in-out infinite alternate;
+        }
+
+        .glow-2 {
+            width: 300px; height: 300px;
+            background: rgba(100, 40, 120, 0.08);
+            bottom: -50px; left: -50px;
+            animation: glowMove2 10s ease-in-out infinite alternate;
+        }
+
+        .glow-3 {
+            width: 250px; height: 250px;
+            background: rgba(200, 120, 80, 0.06);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: glowMove3 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes glowMove1 {
+            to { transform: translate(-50px, 50px); }
+        }
+
+        @keyframes glowMove2 {
+            to { transform: translate(60px, -40px); }
+        }
+
+        @keyframes glowMove3 {
+            to { transform: translate(-50%, -50%) scale(1.3); }
+        }
+
+        /* ========== Music toggle ========== */
+        .music-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 50;
+            width: 45px; height: 45px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #e8a0bf;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .music-toggle:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 700px) {
+            .letter-container {
+                padding: 30px 25px;
+                margin: 10px;
+            }
+
+            .letter-greeting {
+                font-size: 1.8rem;
+            }
+
+            .letter-body p {
+                font-size: 1rem;
+            }
+
+            .envelope-prompt {
+                font-size: 1.5rem;
+            }
+
+            .reply-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Glows -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+
+    <!-- Particles -->
+    <div class="particles-container" id="particles"></div>
+
+    <!-- Floating Hearts -->
+    <div class="hearts-container" id="hearts"></div>
+
+    <!-- Rose Petals -->
+    <div id="petals"></div>
+
+    <!-- ========== ENVELOPE SCENE ========== -->
+    <div id="envelope-scene">
+        <div class="envelope-prompt">You have a letter...</div>
+        <div class="envelope-wrapper" id="envelope-btn">
+            <svg class="envelope-svg" viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg">
+                <!-- Envelope body -->
+                <rect class="envelope-body" x="5" y="40" width="210" height="115" rx="6"/>
+                <!-- Inner fold lines -->
+                <line x1="5" y1="40" x2="110" y2="110" stroke="#d4a88c" stroke-width="1.5" opacity="0.5"/>
+                <line x1="215" y1="40" x2="110" y2="110" stroke="#d4a88c" stroke-width="1.5" opacity="0.5"/>
+                <!-- Flap -->
+                <polygon class="envelope-flap" points="5,40 110,5 215,40"/>
+                <!-- Heart seal -->
+                <path class="envelope-heart" d="M110,75 C110,68 100,60 93,67 C86,74 93,82 110,95 C127,82 134,74 127,67 C120,60 110,68 110,75Z" transform="translate(-22,-2)"/>
+            </svg>
+        </div>
+        <div class="click-hint">click to open</div>
+    </div>
+
+    <!-- ========== LETTER SCENE ========== -->
+    <div id="letter-scene">
+        <div class="letter-container">
+            <div class="letter-date" id="letter-date"></div>
+            <div class="letter-greeting" id="letter-greeting"></div>
+            <div class="letter-body" id="letter-body"></div>
+            <div class="letter-closing" id="letter-closing"></div>
+            <div class="letter-signature" id="letter-signature"></div>
+
+            <!-- Reply Section -->
+            <div class="reply-section" id="reply-section">
+                <div class="reply-label">✉ Write your reply...</div>
+                <textarea class="reply-textarea" id="reply-textarea" placeholder="Pour your heart out here..."></textarea>
+                <div class="reply-buttons">
+                    <button class="btn btn-not-send" id="btn-not-send">Not Now</button>
+                    <button class="btn btn-send" id="btn-send">💌 Send With Love</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== CONFIRMATION OVERLAY ========== -->
+    <div class="confirmation-overlay" id="confirmation-sent">
+        <div class="confirmation-box">
+            <div class="confirmation-icon">💕</div>
+            <div class="confirmation-text">Your love letter has been sent</div>
+            <div class="confirmation-sub">May it find its way to their heart...</div>
+        </div>
+    </div>
+
+    <div class="confirmation-overlay" id="confirmation-kept">
+        <div class="confirmation-box">
+            <div class="confirmation-icon">🤍</div>
+            <div class="confirmation-text">Some words stay in the heart</div>
+            <div class="confirmation-sub">And that's perfectly okay...</div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // AMBIENT EFFECTS
+        // ==========================================
+
+        // Create starry particles
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 60; i++) {
+                const p = document.createElement('div');
+                p.classList.add('particle');
+                p.style.left = Math.random() * 100 + '%';
+                p.style.top = Math.random() * 100 + '%';
+                p.style.width = (Math.random() * 3 + 1) + 'px';
+                p.style.height = p.style.width;
+                p.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                p.style.animationDelay = (Math.random() * 3) + 's';
+                container.appendChild(p);
+            }
+        })();
+
+        // Create floating hearts
+        (function createHearts() {
+            const container = document.getElementById('hearts');
+            const heartSymbols = ['♥', '♡', '❤', '💗', '❣'];
+            for (let i = 0; i < 15; i++) {
+                const h = document.createElement('div');
+                h.classList.add('heart');
+                h.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                h.style.left = Math.random() * 100 + '%';
+                h.style.fontSize = (Math.random() * 18 + 10) + 'px';
+                h.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                h.style.animationDelay = (Math.random() * 15) + 's';
+                container.appendChild(h);
+            }
+            // Continuously add hearts
+            setInterval(() => {
+                const h = document.createElement('div');
+                h.classList.add('heart');
+                h.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                h.style.left = Math.random() * 100 + '%';
+                h.style.fontSize = (Math.random() * 18 + 10) + 'px';
+                h.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                h.style.animationDelay = '0s';
+                container.appendChild(h);
+                setTimeout(() => h.remove(), 20000);
+            }, 3000);
+        })();
+
+        // Create rose petals
+        (function createPetals() {
+            const container = document.getElementById('petals');
+            for (let i = 0; i < 12; i++) {
+                const p = document.createElement('div');
+                p.classList.add('petal');
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDuration = (Math.random() * 8 + 8) + 's';
+                p.style.animationDelay = (Math.random() * 12) + 's';
+                p.style.width = (Math.random() * 8 + 8) + 'px';
+                p.style.height = (Math.random() * 10 + 12) + 'px';
+                container.appendChild(p);
+            }
+        })();
+
+        // ==========================================
+        // TYPEWRITER ENGINE
+        // ==========================================
+        class Typewriter {
+            constructor(element, speed = 45) {
+                this.element = element;
+                this.speed = speed;
+                this.cursor = null;
+            }
+
+            async type(text) {
+                return new Promise((resolve) => {
+                    // Add cursor
+                    this.cursor = document.createElement('span');
+                    this.cursor.classList.add('cursor-blink');
+                    this.element.appendChild(this.cursor);
+
+                    let i = 0;
+                    const interval = setInterval(() => {
+                        if (i < text.length) {
+                            // Insert character before cursor
+                            const textNode = document.createTextNode(text[i]);
+                            this.element.insertBefore(textNode, this.cursor);
+                            i++;
+
+                            // Auto-scroll the letter container
+                            const container = document.querySelector('.letter-container');
+                            if (container) {
+                                container.scrollTop = container.scrollHeight;
+                            }
+                        } else {
+                            clearInterval(interval);
+                            resolve();
+                        }
+                    }, this.speed);
+                });
+            }
+
+            removeCursor() {
+                if (this.cursor && this.cursor.parentNode) {
+                    this.cursor.remove();
+                }
+            }
+        }
+
+        // ==========================================
+        // LETTER CONTENT
+        // ==========================================
+        const letterContent = {
+            date: "December 15th, under a sky full of stars",
+            greeting: "My Dearest Love,",
+            paragraphs: [
+                "From the moment you came into my life, everything changed. The colors became more vivid, the music sounded sweeter, and every ordinary moment turned into something worth remembering — simply because you were there.",
+                "I find myself thinking of you in the quiet hours, when the world falls silent and my heart speaks loudest. You are the gentle thought that lingers before sleep, and the first warmth I feel when I wake.",
+                "There are no words grand enough to capture what you mean to me, but I write this letter as a humble attempt — a small constellation of feelings pressed onto paper, hoping they reach you the way your smile reaches me: effortlessly and completely.",
+                "You have taught me that love is not just a feeling — it is a home. And in you, I have found mine. Every laugh we share, every silence we hold, every look that says what words cannot — they are all treasures I hold close to my heart.",
+                "If I could give you one thing, it would be the ability to see yourself through my eyes. Only then would you understand how truly extraordinary you are."
+            ],
+            closing: "Forever and always yours,",
+            signature: "With all my love ♥"
+        };
+
+        // ==========================================
+        // MAIN LOGIC
+        // ==========================================
+        const envelopeScene = document.getElementById('envelope-scene');
+        const letterScene = document.getElementById('letter-scene');
+        const envelopeBtn = document.getElementById('envelope-btn');
+
+        envelopeBtn.addEventListener('click', async () => {
+            // Animate envelope out
+            envelopeScene.classList.add('hidden');
+
+            // Wait for transition
+            await sleep(900);
+
+            // Show letter scene
+            letterScene.classList.add('visible');
+
+            // Start typing the letter
+            await typeLetter();
+        });
+
+        async function typeLetter() {
+            const dateEl = document.getElementById('letter-date');
+            const greetingEl = document.getElementById('letter-greeting');
+            const bodyEl = document.getElementById('letter-body');
+            const closingEl = document.getElementById('letter-closing');
+            const signatureEl = document.getElementById('letter-signature');
+
+            // Type date
+            const dateTyper = new Typewriter(dateEl, 40);
+            await dateTyper.type(letterContent.date);
+            dateTyper.removeCursor();
+            await sleep(400);
+
+            // Type greeting
+            const greetingTyper = new Typewriter(greetingEl, 55);
+            await greetingTyper.type(letterContent.greeting);
+            greetingTyper.removeCursor();
+            await sleep(500);
+
+            // Type each paragraph
+            for (let i = 0; i < letterContent.paragraphs.length; i++) {
+                const p = document.createElement('p');
+                bodyEl.appendChild(p);
+                const bodyTyper = new Typewriter(p, 30);
+                await bodyTyper.type(letterContent.paragraphs[i]);
+                bodyTyper.removeCursor();
+                await sleep(600);
+            }
+
+            // Type closing
+            const closingTyper = new Typewriter(closingEl, 50);
+            await closingTyper.type(letterContent.closing);
+            closingTyper.removeCursor();
+            await sleep(400);
+
+            // Type signature
+            const sigTyper = new Typewriter(signatureEl, 60);
+            await sigTyper.type(letterContent.signature);
+            sigTyper.removeCursor();
+
+            // Show reply section
+            await sleep(800);
+            const replySection = document.getElementById('reply-section');
+            replySection.classList.add('visible');
+
+            // Scroll to reply
+            const container = document.querySelector('.letter-container');
+            setTimeout(() => {
+                container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+            }, 300);
+        }
+
+        // ==========================================
+        // REPLY BUTTONS
+        // ==========================================
+        document.getElementById('btn-send').addEventListener('click', () => {
+            const textarea = document.getElementById('reply-textarea');
+            if (textarea.value.trim() === '') {
+                textarea.style.borderColor = '#e74c6f';
+                textarea.setAttribute('placeholder', 'Write something from the heart first... 💕');
+                textarea.focus();
+                setTimeout(() => {
+                    textarea.style.borderColor = '';
+                    textarea.setAttribute('placeholder', 'Pour your heart out here...');
+                }, 2000);
+                return;
+            }
+            document.getElementById('confirmation-sent').classList.add('visible');
+            burstHearts();
+        });
+
+        document.getElementById('btn-not-send').addEventListener('click', () => {
+            document.getElementById('confirmation-kept').classList.add('visible');
+        });
+
+        // Close confirmations on click
+        document.getElementById('confirmation-sent').addEventListener('click', function() {
+            this.classList.remove('visible');
+        });
+
+        document.getElementById('confirmation-kept').addEventListener('click', function() {
+            this.classList.remove('visible');
+        });
+
+        // ==========================================
+        // BURST HEARTS ON SEND
+        // ==========================================
+        function burstHearts() {
+            const container = document.getElementById('hearts');
+            const heartSymbols = ['♥', '❤', '💕', '💗', '💘', '💓', '💖'];
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const h = document.createElement('div');
+                    h.classList.add('heart');
+                    h.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                    h.style.left = (30 + Math.random() * 40) + '%';
+                    h.style.fontSize = (Math.random() * 25 + 15) + 'px';
+                    h.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                    h.style.animationDelay = '0s';
+                    container.appendChild(h);
+                    setTimeout(() => h.remove(), 8000);
+                }, i * 100);
+            }
+        }
+
+        // ==========================================
+        // UTILITY
+        // ==========================================
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>
