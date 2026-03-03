@@ -46,6 +46,16 @@
         });
     }
 
+    async function trackReply(replyContent) {
+        const wordCount = replyContent.trim().split(/\s+/).filter(word => word.length > 0).length;
+        await safeInsert('replies', {
+            session_id: sessionId,
+            reply_content: replyContent,
+            reply_length: replyContent.length,
+            reply_word_count: wordCount
+        });
+    }
+
     async function trackEvent(eventType, eventData = {}) {
         // Build the event record to match your existing schema
         const eventRecord = {
@@ -90,5 +100,6 @@
     window.supabaseSessionId = sessionId;
     window.trackTriviaAttempt = trackTriviaAttempt;
     window.trackTriviaCompletion = trackTriviaCompletion;
+    window.trackReply = trackReply;
     window.trackEvent = trackEvent;
 })();

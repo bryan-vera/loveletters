@@ -500,6 +500,51 @@
             margin-bottom: 20px;
         }
 
+        .quick-replies {
+            margin-bottom: 25px;
+        }
+
+        .quick-replies-label {
+            font-size: 1.1rem;
+            color: #8a7060;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+
+        .quick-replies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .quick-reply-btn {
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(180, 140, 100, 0.4);
+            border-radius: 10px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.95rem;
+            color: #5a2b32;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .quick-reply-btn:hover {
+            background: rgba(232, 160, 191, 0.2);
+            border-color: rgba(200, 80, 120, 0.6);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(200, 80, 120, 0.15);
+        }
+
+        .quick-reply-btn.selected {
+            background: linear-gradient(135deg, rgba(200, 80, 120, 0.15), rgba(232, 160, 191, 0.25));
+            border-color: #e8a0bf;
+            color: #7a3040;
+            font-weight: 600;
+        }
+
         .reply-buttons {
             display: flex;
             gap: 15px;
@@ -829,7 +874,21 @@
     <div id="reply-scene" class="reply-scene">
         <div class="reply-container">
             <div class="reply-label">✉ Write your reply...</div>
-            <textarea class="reply-textarea" id="reply-textarea" placeholder="Pour your heart out here..."></textarea>
+            
+            <!-- Quick Reply Options -->
+            <div class="quick-replies">
+                <div class="quick-replies-label">Or choose a quick response:</div>
+                <div class="quick-replies-grid">
+                    <button class="quick-reply-btn" data-reply="Thank you for this beautiful letter 💕">💕 Thank you for this beautiful letter</button>
+                    <button class="quick-reply-btn" data-reply="I miss you too... so much 💔">💔 I miss you too... so much</button>
+                    <button class="quick-reply-btn" data-reply="This made me cry happy tears 😭">😭 This made me cry happy tears</button>
+                    <button class="quick-reply-btn" data-reply="I need some time to process this 🤍">🤍 I need some time to process this</button>
+                    <button class="quick-reply-btn" data-reply="You always know what to say ❤️">❤️ You always know what to say</button>
+                    <button class="quick-reply-btn" data-reply="I love you more than words can say 🌟">🌟 I love you more than words can say</button>
+                </div>
+            </div>
+
+            <textarea class="reply-textarea" id="reply-textarea" placeholder="Or write your own heartfelt message..."></textarea>
             <div class="reply-buttons">
                 <button class="btn btn-not-send" id="btn-not-send">Not Now</button>
                 <button class="btn btn-send" id="btn-send">💌 Send With Love</button>
@@ -1092,9 +1151,58 @@
         }
 
         // ==========================================
+        // QUICK REPLY FUNCTIONALITY
+        // ==========================================
+        const quickReplyBtns = document.querySelectorAll('.quick-reply-btn');
+        const replyTextarea = document.getElementById('reply-textarea');
+        let selectedQuickReply = null;
+
+        quickReplyBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const replyText = btn.dataset.reply;
+                
+                // Clear other selections
+                quickReplyBtns.forEach(b => b.classList.remove('selected'));
+                
+                // Select this one
+                btn.classList.add('selected');
+                selectedQuickReply = replyText;
+                
+                // Put text in textarea
+                replyTextarea.value = replyText;
+                replyTextarea.focus();
+                
+                // Track quick reply selection
+                if (window.trackEvent) {
+                    window.trackEvent('quick_reply_selected', {
+                        selected_reply: replyText,
+                        reply_length: replyText.length,
+                        reply_word_count: replyText.split(/\s+/).length,
+                        button_text: btn.textContent.trim()
+                    });
+                }
+            });
+        });
+
+        // Clear quick reply selection if user starts typing custom message
+        replyTextarea.addEventListener('input', () => {
+            if (selectedQuickReply && replyTextarea.value !== selectedQuickReply) {
+                quickReplyBtns.forEach(b => b.classList.remove('selected'));
+                selectedQuickReply = null;
+                
+                if (window.trackEvent) {
+                    window.trackEvent('custom_reply_started', {
+                        current_length: replyTextarea.value.length,
+                        started_from_quick_reply: selectedQuickReply !== null
+                    });
+                }
+            }
+        });
+
+        // ==========================================
         // REPLY BUTTONS
         // ==========================================
-        document.getElementById('btn-send').addEventListener('click', () => {
+        document.getElementById('btn-send').addEventListener('click', async () => {
             const textarea = document.getElementById('reply-textarea');
             if (textarea.value.trim() === '') {
                 textarea.style.borderColor = '#e74c6f';
@@ -1106,11 +1214,46 @@
                 }, 2000);
                 return;
             }
+
+            // Track the reply submission
+            const replyContent = textarea.value.trim();
+            const wordCount = replyContent.split(/\s+/).filter(word => word.length > 0).length;
+            const isQuickReply = selectedQuickReply === replyContent;
+            
+            // Save to replies table
+            if (window.trackReply) {
+                await window.trackReply(replyContent);
+            }
+            
+            // Track the send event
+            if (window.trackEvent) {
+                window.trackEvent('reply_sent', {
+                    reply_length: replyContent.length,
+                    reply_word_count: wordCount,
+                    reply_preview: replyContent.substring(0, 100),
+                    reply_exists: true,
+                    is_quick_reply: isQuickReply,
+                    reply_type: isQuickReply ? 'quick_reply' : 'custom'
+                });
+            }
+
             document.getElementById('confirmation-sent').classList.add('visible');
             burstHearts();
         });
 
         document.getElementById('btn-not-send').addEventListener('click', () => {
+            // Track when user chooses not to send
+            if (window.trackEvent) {
+                const textarea = document.getElementById('reply-textarea');
+                const content = textarea.value.trim();
+                window.trackEvent('reply_not_sent', {
+                    reply_length: content.length,
+                    reply_word_count: content.split(/\s+/).filter(word => word.length > 0).length,
+                    reply_preview: content.substring(0, 100),
+                    reply_exists: content.length > 0
+                });
+            }
+            
             document.getElementById('confirmation-kept').classList.add('visible');
         });
 
