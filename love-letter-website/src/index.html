@@ -809,6 +809,18 @@
             box-shadow: 0 8px 30px rgba(200, 60, 80, 0.6);
         }
 
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 0 4px 20px rgba(200, 60, 80, 0.2) !important;
+        }
+
+        .btn:disabled:hover {
+            transform: none !important;
+            box-shadow: 0 4px 20px rgba(200, 60, 80, 0.2) !important;
+        }
+
         .btn-not-send {
             background: transparent;
             color: #8a7060;
@@ -1063,7 +1075,7 @@
             <div class="letter-closing" id="letter-closing"></div>
             <div class="letter-signature" id="letter-signature"></div>
             <div class="letter-actions" id="letter-actions">
-                <button class="btn btn-send" id="btn-to-gallery">Continuar a recuerdos</button>
+                <button class="btn btn-send" id="btn-to-gallery" disabled>Continuar a recuerdos</button>
             </div>
         </div>
     </div>
@@ -1497,6 +1509,11 @@
             await sleep(800);
             if (letterActions) {
                 letterActions.classList.add('visible');
+                // Enable the continue button after letter is fully typed
+                const btnToGallery = document.getElementById('btn-to-gallery');
+                if (btnToGallery) {
+                    btnToGallery.disabled = false;
+                }
             }
 
             // Scroll to reply
