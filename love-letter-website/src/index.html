@@ -1565,35 +1565,35 @@
             const signatureEl = document.getElementById('letter-signature');
 
             // Type date
-            const dateTyper = new Typewriter(dateEl, 40);
+            const dateTyper = new Typewriter(dateEl, 80);
             await dateTyper.type(letterContent.date);
             dateTyper.removeCursor();
-            await sleep(400);
+            await sleep(800);
 
             // Type greeting
-            const greetingTyper = new Typewriter(greetingEl, 55);
+            const greetingTyper = new Typewriter(greetingEl, 90);
             await greetingTyper.type(letterContent.greeting);
             greetingTyper.removeCursor();
-            await sleep(500);
+            await sleep(900);
 
             // Type each paragraph
             for (let i = 0; i < letterContent.paragraphs.length; i++) {
                 const p = document.createElement('p');
                 bodyEl.appendChild(p);
-                const bodyTyper = new Typewriter(p, 30);
+                const bodyTyper = new Typewriter(p, 60);
                 await bodyTyper.type(letterContent.paragraphs[i]);
                 bodyTyper.removeCursor();
-                await sleep(800);
+                await sleep(1200);
             }
 
             // Type closing
-            const closingTyper = new Typewriter(closingEl, 50);
+            const closingTyper = new Typewriter(closingEl, 85);
             await closingTyper.type(letterContent.closing);
             closingTyper.removeCursor();
             await sleep(400);
 
             // Type signature
-            const sigTyper = new Typewriter(signatureEl, 60);
+            const sigTyper = new Typewriter(signatureEl, 95);
             await sigTyper.type(letterContent.signature);
             sigTyper.removeCursor();
 
