@@ -1220,6 +1220,78 @@
     <script src="js/comprehensive-tracking.js"></script>
     <script>
         // ==========================================
+        // SESSION MANAGEMENT
+        // ==========================================
+        let currentSessionId = null;
+
+        // Generate unique session ID
+        function generateSessionId() {
+            return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Start a new session
+        async function startSession() {
+            try {
+                currentSessionId = generateSessionId();
+                
+                if (window.supabase) {
+                    const { data, error } = await window.supabase
+                        .from('sessions')
+                        .insert([
+                            { 
+                                session_id: currentSessionId,
+                                started_at: new Date().toISOString()
+                            }
+                        ]);
+                    
+                    if (error) {
+                        console.error('Error starting session:', error);
+                    } else {
+                        console.log('Session started:', currentSessionId);
+                    }
+                }
+                
+                // Store session ID in localStorage as backup
+                localStorage.setItem('love_letter_session_id', currentSessionId);
+                
+                return currentSessionId;
+            } catch (error) {
+                console.error('Error in startSession:', error);
+            }
+        }
+
+        // End current session
+        async function endSession() {
+            try {
+                if (currentSessionId && window.supabase) {
+                    const { data, error } = await window.supabase
+                        .from('sessions')
+                        .update({ 
+                            ended_at: new Date().toISOString()
+                        })
+                        .eq('session_id', currentSessionId);
+                    
+                    if (error) {
+                        console.error('Error ending session:', error);
+                    } else {
+                        console.log('Session ended:', currentSessionId);
+                    }
+                }
+                
+                // Clear localStorage
+                localStorage.removeItem('love_letter_session_id');
+                currentSessionId = null;
+            } catch (error) {
+                console.error('Error in endSession:', error);
+            }
+        }
+
+        // Get current session ID
+        function getCurrentSessionId() {
+            return currentSessionId || localStorage.getItem('love_letter_session_id');
+        }
+
+        // ==========================================
         // AMBIENT EFFECTS
         // ==========================================
 
@@ -1396,6 +1468,26 @@
         const replyScene = document.getElementById('reply-scene');
         const letterActions = document.getElementById('letter-actions');
         const envelopeBtn = document.getElementById('envelope-btn');
+
+        // Start session when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            await startSession();
+            
+            // Track session start
+            if (window.trackEvent) {
+                window.trackEvent('session_started', {
+                    session_id: getCurrentSessionId(),
+                    timestamp: new Date().toISOString(),
+                    user_agent: navigator.userAgent,
+                    referrer: document.referrer
+                });
+            }
+        });
+
+        // End session when page unloads
+        window.addEventListener('beforeunload', () => {
+            endSession();
+        });
 
         envelopeBtn.addEventListener('click', async () => {
             // Animate envelope out
@@ -1642,7 +1734,7 @@
         // ==========================================
         // REPLY BUTTONS
         // ==========================================
-        document.getElementById('btn-send').addEventListener('click', async () => {
+            document.getElementById('btn-send').addEventListener('click', async () => {
             const textarea = document.getElementById('reply-textarea');
             if (textarea.value.trim() === '') {
                 textarea.style.borderColor = '#e74c6f';
@@ -1665,9 +1757,10 @@
                 await window.trackReply(replyContent);
             }
             
-            // Track the send event
+            // Track the send event with session
             if (window.trackEvent) {
                 window.trackEvent('reply_sent', {
+                    session_id: getCurrentSessionId(),
                     reply_length: replyContent.length,
                     reply_word_count: wordCount,
                     reply_preview: replyContent.substring(0, 100),
@@ -1679,6 +1772,18 @@
 
             document.getElementById('confirmation-sent').classList.add('visible');
             burstHearts();
+            
+            // End session after successful reply
+            setTimeout(async () => {
+                await endSession();
+                if (window.trackEvent) {
+                    window.trackEvent('session_completed', {
+                        session_id: getCurrentSessionId(),
+                        completion_type: 'reply_sent',
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            }, 2000);
         });
 
         document.getElementById('btn-not-send').addEventListener('click', () => {
@@ -1687,6 +1792,7 @@
                 const textarea = document.getElementById('reply-textarea');
                 const content = textarea.value.trim();
                 window.trackEvent('reply_not_sent', {
+                    session_id: getCurrentSessionId(),
                     reply_length: content.length,
                     reply_word_count: content.split(/\s+/).filter(word => word.length > 0).length,
                     reply_preview: content.substring(0, 100),
@@ -1695,6 +1801,18 @@
             }
             
             document.getElementById('confirmation-kept').classList.add('visible');
+            
+            // End session after user chooses not to send
+            setTimeout(async () => {
+                await endSession();
+                if (window.trackEvent) {
+                    window.trackEvent('session_completed', {
+                        session_id: getCurrentSessionId(),
+                        completion_type: 'reply_not_sent',
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            }, 2000);
         });
 
         // Close confirmations on click
