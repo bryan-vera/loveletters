@@ -1646,11 +1646,11 @@
             const textarea = document.getElementById('reply-textarea');
             if (textarea.value.trim() === '') {
                 textarea.style.borderColor = '#e74c6f';
-                textarea.setAttribute('placeholder', 'Write something from the heart first... 💕');
+                textarea.setAttribute('placeholder', 'Aun puedes escribir algo...');
                 textarea.focus();
                 setTimeout(() => {
                     textarea.style.borderColor = '';
-                    textarea.setAttribute('placeholder', 'Pour your heart out here...');
+                    textarea.setAttribute('placeholder', 'No hay palabras mal dichas...');
                 }, 2000);
                 return;
             }
