@@ -50,10 +50,10 @@
 
         if (isCorrect) {
             state.q1.correct = true;
-            setFeedback('q1-feedback', 'Correct! On to the next one.', 'success');
+            setFeedback('q1-feedback', 'Correcto! Vamos a la siguiente', 'success');
             setTimeout(() => showQuestion(2), 500);
         } else {
-            setFeedback('q1-feedback', 'Not quite! Try again, love.', 'error');
+            setFeedback('q1-feedback', 'Umm no, quizás te falla la memoria, pero intentalo nuevamente.', 'error');
             shake(btn);
         }
     }
@@ -74,10 +74,10 @@
 
         if (isCorrect) {
             state.q2.correct = true;
-            setFeedback('q2-feedback', 'Always the right answer 💖', 'success');
+            setFeedback('q2-feedback', 'Respuesta correcta, lets go!!', 'success');
             setTimeout(() => showQuestion(3), 500);
         } else {
-            setFeedback('q2-feedback', 'Nope, try again!', 'error');
+            setFeedback('q2-feedback', 'Not quite my tempo', 'error');
             shake(btn);
         }
     }
@@ -101,10 +101,10 @@
 
         if (isCorrect) {
             state.q3.correct = true;
-            setFeedback('q3-feedback', 'Perfect! Unlocking your letter...', 'success');
+            setFeedback('q3-feedback', 'Perfecto! La carta ha sido desbloqueada...', 'success');
             completeTrivia();
         } else {
-            setFeedback('q3-feedback', 'That is not the one. Try again!', 'error');
+            setFeedback('q3-feedback', 'Umm no es el correcto, recuerda que le preguntaste a ChatGPT haha', 'error');
             shake(input);
             if (input) input.focus();
         }

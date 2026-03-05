@@ -234,6 +234,7 @@
             border-radius: 8px;
             padding: 50px 55px;
             max-width: 650px;
+            scroll-behavior: smooth;
             width: 100%;
             max-height: 85vh;
             overflow-y: auto;
@@ -245,7 +246,7 @@
             color: #3a2518;
         }
 
-        .letter-container::before {
+        /* .letter-container::before {
             content: '';
             position: absolute;
             top: 0; left: 0;
@@ -268,7 +269,7 @@
             height: 100%;
             background: rgba(200, 100, 100, 0.2);
             pointer-events: none;
-        }
+        } */
 
         .letter-container::-webkit-scrollbar {
             width: 6px;
@@ -487,6 +488,103 @@
             color: #7a3040;
             font-size: 1rem;
             box-shadow: inset 0 0 20px rgba(200,170,130,0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                inset 0 0 20px rgba(200,170,130,0.15),
+                0 8px 25px rgba(200, 80, 120, 0.3);
+            background: rgba(255,255,255,0.9);
+        }
+
+        .gallery-item .media-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .gallery-item[data-type="video"] {
+            border-color: rgba(200, 80, 120, 0.5);
+        }
+
+        .gallery-item[data-type="video"] .media-icon {
+            color: #e74c6f;
+        }
+
+        /* ========== Gallery Modal ========== */
+        .gallery-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+        }
+
+        .gallery-modal.visible {
+            display: flex;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .gallery-modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+            animation: modalZoom 0.4s ease;
+        }
+
+        @keyframes modalZoom {
+            from { transform: scale(0.3); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .gallery-modal img,
+        .gallery-modal video {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.8);
+        }
+
+        .gallery-modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .gallery-modal-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .gallery-modal-title {
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            right: 0;
+            color: #fff;
+            text-align: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
         }
 
         .gallery-actions {
@@ -551,6 +649,124 @@
             margin-top: 20px;
             justify-content: flex-end;
         }
+
+        /* ========== Spotify Popup ========== */
+        .spotify-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            backdrop-filter: blur(5px);
+        }
+
+        .spotify-overlay.visible {
+            display: flex;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .spotify-popup {
+            background: linear-gradient(145deg, #fdf6ee 0%, #f8ead8 30%, #fdf6ee 60%, #f5e0cc 100%);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.6);
+            animation: scaleIn 0.6s ease;
+            position: relative;
+        }
+
+        .spotify-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.5rem;
+            color: #7a3040;
+            margin-bottom: 15px;
+        }
+
+        .spotify-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: #8a7060;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .spotify-code {
+            background: #000;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 25px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .spotify-logo {
+            color: #1DB954;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .spotify-code-image {
+            width: 250px;
+            height: 300px;
+            object-fit: cover;
+            /* background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwMDAiLz4KPGcgZmlsbD0iIzFEQjk1NCI+CjxyZWN0IHg9IjIwIiB5PSIyMCIgd2lkdGg9IjQiIGhlaWdodD0iMTYwIi8+CjxyZWN0IHg9IjMwIiB5PSI0MCIgd2lkdGg9IjQiIGhlaWdodD0iMTIwIi8+CjxyZWN0IHg9IjQwIiB5PSIzMCIgd2lkdGg9IjQiIGhlaWdodD0iMTQwIi8+CjxyZWN0IHg9IjUwIiB5PSI2MCIgd2lkdGg9IjQiIGhlaWdodD0iODAiLz4KPHJlY3QgeD0iNjAiIHk9IjUwIiB3aWR0aD0iNCIgaGVpZ2h0PSIxMDAiLz4KPHJlY3QgeD0iNzAiIHk9IjIwIiB3aWR0aD0iNCIgaGVpZ2h0PSIxNjAiLz4KPHJlY3QgeD0iODAiIHk9IjcwIiB3aWR0aD0iNCIgaGVpZ2h0PSI2MCIvPgo8cmVjdCB4PSI5MCIgeT0iMzAiIHdpZHRoPSI0IiBoZWlnaHQ9IjE0MCIvPgo8cmVjdCB4PSIxMDAiIHk9IjUwIiB3aWR0aD0iNCIgaGVpZ2h0PSIxMDAiLz4KPHJlY3QgeD0iMTEwIiB5PSI0MCIgd2lkdGg9IjQiIGhlaWdodD0iMTIwIi8+CjxyZWN0IHg9IjEyMCIgeT0iNjAiIHdpZHRoPSI0IiBoZWlnaHQ9IjgwIi8+CjxyZWN0IHg9IjEzMCIgeT0iMzAiIHdpZHRoPSI0IiBoZWlnaHQ9IjE0MCIvPgo8cmVjdCB4PSIxNDAiIHk9IjIwIiB3aWR0aD0iNCIgaGVpZ2h0PSIxNjAiLz4KPHJlY3QgeD0iMTUwIiB5PSI0MCIgd2lkdGg9IjQiIGhlaWdodD0iMTIwIi8+CjxyZWN0IHg9IjE2MCIgeT0iNzAiIHdpZHRoPSI0IiBoZWlnaHQ9IjYwIi8+CjxyZWN0IHg9IjE3MCIgeT0iNTAiIHdpZHRoPSI0IiBoZWlnaHQ9IjEwMCIvPgo8L2c+Cjx0ZXh0IHg9IjEwMCIgeT0iMTkwIiBmaWxsPSIjMURCOTU0IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkxvdmUgU29uZzwvdGV4dD4KPC9zdmc+') center/contain no-repeat; */
+            border: 3px solid #1DB954;
+            border-radius: 10px;
+        }
+
+        .spotify-instructions {
+            color: #fff;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .spotify-link {
+            background: #1DB954;
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-block;
+            margin: 15px 10px;
+            transition: all 0.3s ease;
+        }
+
+        .spotify-link:hover {
+            background: #1ed760;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.4);
+        }
+
+        .spotify-continue {
+            background: linear-gradient(135deg, #c0392b, #e74c6f);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .spotify-continue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(200, 60, 80, 0.4);
+        }
+
 
         .btn {
             padding: 12px 35px;
@@ -781,7 +997,7 @@
 
     <!-- ========== ENVELOPE SCENE ========== -->
     <div id="envelope-scene">
-        <div class="envelope-prompt">You have a letter...</div>
+        <div class="envelope-prompt">Hey you Deyiboo, tienes una carta...</div>
         <div class="envelope-wrapper" id="envelope-btn">
             <svg class="envelope-svg" viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg">
                 <!-- Envelope body -->
@@ -795,43 +1011,44 @@
                 <path class="envelope-heart" d="M110,75 C110,68 100,60 93,67 C86,74 93,82 110,95 C127,82 134,74 127,67 C120,60 110,68 110,75Z" transform="translate(-22,-2)"/>
             </svg>
         </div>
-        <div class="click-hint">click to open</div>
+        <div class="click-hint">click para abrir</div>
     </div>
 
     <!-- ========== TRIVIA SCENE ========== -->
     <div id="trivia-scene" class="trivia-scene">
         <div class="trivia-card">
-            <div class="trivia-header">Prove it’s you</div>
-            <div class="trivia-subtitle">Answer these three to unlock your letter.</div>
-            <div class="trivia-progress">Question <span id="trivia-step">1</span> of 3</div>
+            <div class="trivia-header">Antes de que puedas leerlo debes de probar que eres tu</div>
+            <div class="trivia-subtitle">Debes de responder estas tres preguntas para desbloquear la carta.</div>
+            <div class="trivia-progress">Pregunta <span id="trivia-step">1</span> de 3</div>
 
             <div class="trivia-question trivia-q1" data-question="1">
-                <h2>Question 1: What does your boyfriend do for work?</h2>
+                <h2>Aquella noche en el auto cuando luego de comer ramen fuimos por nuggets, encontramos uno con una forma graciosa, ¿de qué forma era?</h2>
                 <div class="trivia-options">
-                    <button class="trivia-option" data-answer="🧙‍♂️ Professional Wizard" data-correct="false">🧙‍♂️ Professional Wizard</button>
-                    <button class="trivia-option" data-answer="🐛 Bug Creator (and sometimes fixer)" data-correct="false">🐛 Bug Creator (and sometimes fixer)</button>
-                    <button class="trivia-option" data-answer="💻 Software Developer (Bug Artist)" data-correct="true">💻 Software Developer (Bug Artist)</button>
-                    <button class="trivia-option" data-answer="☕ Professional Coffee Drinker" data-correct="false">☕ Professional Coffee Drinker</button>
+                    <button class="trivia-option" data-answer="Perro" data-correct="false">Perro</button>
+                    <button class="trivia-option" data-answer="Bota" data-correct="true">Bota</button>
+                    <button class="trivia-option" data-answer="Nube" data-correct="false">Nube</button>
+                    <button class="trivia-option" data-answer="Triangulo" data-correct="false">Triángulo</button>
                 </div>
                 <div class="trivia-feedback" id="q1-feedback"></div>
             </div>
 
             <div class="trivia-question trivia-q2" data-question="2">
-                <h2>Question 2: Do you love him?</h2>
+                <h2>Qué pelicula vimos en navidad?</h2>
                 <div class="trivia-options">
-                    <button class="trivia-option" data-answer="💖 YES! More than anything!" data-correct="true">💖 YES! More than anything!</button>
-                    <button class="trivia-option" data-answer="💔 No..." data-correct="false">💔 No...</button>
+                    <button class="trivia-option" data-answer="Mi pobre angelito" data-correct="false">Mi pobre angelito</button>
+                    <button class="trivia-option" data-answer="El expreso polar" data-correct="false">El expreso polar</button>
+                    <button class="trivia-option" data-answer="Last Christmas" data-correct="true">Last Christmas</button>
+                    <button class="trivia-option" data-answer="White Christmas (Black Mirror)" data-correct="false">White Christmas (Black Mirror)</button>
                 </div>
                 <div class="trivia-feedback" id="q2-feedback"></div>
             </div>
 
             <div class="trivia-question trivia-q3" data-question="3">
-                <h2>Question 3: Which Pokémon are you?</h2>
+                <h2>¿Qué pokemon eres?</h2>
                 <div class="trivia-input-group">
-                    <input class="trivia-input" id="q3-input" type="text" placeholder="Type the Pokémon name...">
-                    <button class="trivia-submit" id="q3-submit">Unlock Letter</button>
+                    <input class="trivia-input" id="q3-input" type="text" placeholder="Escribe el nombre...">
+                    <button class="trivia-submit" id="q3-submit">Desbloquear carta</button>
                 </div>
-                <div class="trivia-hint">Hint: A psychic type that evolved from Eevee through friendship... 💜</div>
                 <div class="trivia-feedback" id="q3-feedback"></div>
             </div>
         </div>
@@ -846,7 +1063,7 @@
             <div class="letter-closing" id="letter-closing"></div>
             <div class="letter-signature" id="letter-signature"></div>
             <div class="letter-actions" id="letter-actions">
-                <button class="btn btn-send" id="btn-to-gallery">Continue to memories ✨</button>
+                <button class="btn btn-send" id="btn-to-gallery">Continuar a recuerdos</button>
             </div>
         </div>
     </div>
@@ -854,18 +1071,40 @@
     <!-- ========== GALLERY SCENE ========== -->
     <div id="gallery-scene" class="gallery-scene">
         <div class="gallery-container">
-            <div class="gallery-header">Our Memories</div>
-            <div class="gallery-subtitle">Little snapshots of us...</div>
+            <div class="gallery-header">Pequeños recuerdos</div>
+            <div class="gallery-subtitle">Snapshots de nuestra fugaz paso juntos...</div>
             <div class="gallery-grid">
-                <div class="gallery-item">🌟 First date glow</div>
-                <div class="gallery-item">🎧 Late-night playlists</div>
-                <div class="gallery-item">🌙 Starlit walks</div>
-                <div class="gallery-item">🍰 Sweet treats</div>
-                <div class="gallery-item">📸 Random laughs</div>
-                <div class="gallery-item">💫 Future dreams</div>
+                <div class="gallery-item" data-type="video" data-src="/assets/images/Navidad.mp4" onclick="openGalleryModal(this)">
+                    <span class="media-icon">📸</span>
+                    Nuestra primera navidad
+                </div>
+                <div class="gallery-item" data-type="image" data-src="/assets/images/Boba.jpeg" onclick="openGalleryModal(this)">
+                    <span class="media-icon">🎬</span>
+                    En nuestro lugar de bubble tea
+                </div>
+                <div class="gallery-item" data-type="image" data-src="/assets/images/Bota.jpeg" onclick="openGalleryModal(this)">
+                    <span class="media-icon">📷</span>
+                    Un nugget muy random
+                </div>
+                <div class="gallery-item" data-type="image" data-src="/assets/images/Camellias.jpeg" onclick="openGalleryModal(this)">
+                    <span class="media-icon">📸</span>
+                    Back to the past
+                </div>
+                <div class="gallery-item" data-type="image" data-src="/assets/images/Sonreir.jpeg" onclick="openGalleryModal(this)">
+                    <span class="media-icon">🎬</span>
+                    Nosotros solo riendo por estar juntos
+                </div>
+                <div class="gallery-item" data-type="image" data-src="/assets/images/Nieve.jpeg" onclick="openGalleryModal(this)">
+                    <span class="media-icon">📷</span>
+                    Tu recuerdo en la nieve
+                </div>
+                <div class="gallery-item" data-type="image" data-src="/assets/images/Muecas.jpeg" onclick="openGalleryModal(this)">
+                    <span class="media-icon">📷</span>
+                    Nosotros siendo random
+                </div>
             </div>
             <div class="gallery-actions">
-                <button class="btn btn-send" id="btn-to-reply">Write a reply 💌</button>
+                <button class="btn btn-send" id="btn-to-reply">Continuar</button>
             </div>
         </div>
     </div>
@@ -873,25 +1112,25 @@
     <!-- ========== REPLY SCENE ========== -->
     <div id="reply-scene" class="reply-scene">
         <div class="reply-container">
-            <div class="reply-label">✉ Write your reply...</div>
+            <div class="reply-label">Te dejo este espacio para que puedas escribir una respuesta, tu decides si 
+                deseas enviarlo dandole click al boton de abajo, te dejo tambien estas respuestas rápidas por si no sabes que decir...</div>
             
             <!-- Quick Reply Options -->
             <div class="quick-replies">
-                <div class="quick-replies-label">Or choose a quick response:</div>
                 <div class="quick-replies-grid">
-                    <button class="quick-reply-btn" data-reply="Thank you for this beautiful letter 💕">💕 Thank you for this beautiful letter</button>
-                    <button class="quick-reply-btn" data-reply="I miss you too... so much 💔">💔 I miss you too... so much</button>
-                    <button class="quick-reply-btn" data-reply="This made me cry happy tears 😭">😭 This made me cry happy tears</button>
-                    <button class="quick-reply-btn" data-reply="I need some time to process this 🤍">🤍 I need some time to process this</button>
-                    <button class="quick-reply-btn" data-reply="You always know what to say ❤️">❤️ You always know what to say</button>
-                    <button class="quick-reply-btn" data-reply="I love you more than words can say 🌟">🌟 I love you more than words can say</button>
+                    <button class="quick-reply-btn" data-reply="Está bien, nos veremos el domingo a las 18h00">Está bien, nos veremos el domingo a las 18h00</button>
+                    <button class="quick-reply-btn" data-reply="Yo tambien te extrano mucho">Yo también te extraño mucho...</button>
+                    <button class="quick-reply-btn" data-reply="Me gustó que te hayas tomando el tiempo, estuvo bonito">Me gustó que te hayas tomando el tiempo, estuvo bonito</button>
+                    <button class="quick-reply-btn" data-reply="Está bien, te voy a desbloquear">Está bien, te voy a desbloquear</button>
+                    <button class="quick-reply-btn" data-reply="Tu no te cansas, verdad?">Tu no te cansas, verdad?</button>
+                    <button class="quick-reply-btn" data-reply="Vamos a intentarlo, pero no va a ser fácil">Vamos a intentarlo, pero no va a ser fácil</button>
                 </div>
             </div>
 
             <textarea class="reply-textarea" id="reply-textarea" placeholder="Or write your own heartfelt message..."></textarea>
             <div class="reply-buttons">
-                <button class="btn btn-not-send" id="btn-not-send">Not Now</button>
-                <button class="btn btn-send" id="btn-send">💌 Send With Love</button>
+                <button class="btn btn-not-send" id="btn-not-send">Por ahora, no</button>
+                <button class="btn btn-send" id="btn-send">Enviar</button>
             </div>
         </div>
     </div>
@@ -900,18 +1139,66 @@
     <div class="confirmation-overlay" id="confirmation-sent">
         <div class="confirmation-box">
             <div class="confirmation-icon">💕</div>
-            <div class="confirmation-text">Your love letter has been sent</div>
-            <div class="confirmation-sub">May it find its way to their heart...</div>
+            <div class="confirmation-text">Tu mensaje fue enviado</div>
+            <div class="confirmation-sub">Que en su rumbo encuentre camino correcto...</div>
         </div>
     </div>
 
     <div class="confirmation-overlay" id="confirmation-kept">
         <div class="confirmation-box">
             <div class="confirmation-icon">🤍</div>
-            <div class="confirmation-text">Some words stay in the heart</div>
-            <div class="confirmation-sub">And that's perfectly okay...</div>
+            <div class="confirmation-text">Algunas palabras se quedan en el corazón</div>
+            <div class="confirmation-sub">Siempre puedes regresar a esta página para enviar un mensaje... o escribirme por whatsapp</div>
         </div>
     </div>
+
+        <!-- ========== SPOTIFY POPUPS ========== -->
+        <div class="spotify-overlay" id="spotify-intro">
+            <div class="spotify-popup">
+                <div class="spotify-title">Momento Spotify</div>
+                <div class="spotify-subtitle">Deja que esta cancion te acompañe mientras lees...</div>
+                <div class="spotify-code">
+                    <img class="spotify-code-image" src="/assets/images/AboutYou.png">
+                </img>
+                </div>
+                <a href="https://open.spotify.com/intl-es/track/3hEfpBHxgieRLz4t3kLNEg?si=b7f6f55c15d142f1" target="_blank" class="spotify-link">Abrir en spotify</a>
+                <button class="spotify-continue" onclick="closeSpotifyPopup('spotify-intro')">Continuar a la carta</button>
+            </div>
+        </div>
+    
+        <div class="spotify-overlay" id="spotify-memories">
+            <div class="spotify-popup">
+                <div class="spotify-title">Momento Spotify</div>
+                <div class="spotify-subtitle">Deja que esta cancion te acompañe mientras recorres los recuerdos...</div>
+                <div class="spotify-code">
+                    <img class="spotify-code-image" src="/assets/images/SomebodyElse.png">
+                </div>
+                <a href="https://open.spotify.com/intl-es/track/4m0q0xQ2BNl9SCAGKyfiGZ?si=c39b04f571194edb" target="_blank" class="spotify-link">Abrir en spotify</a>
+                <button class="spotify-continue" onclick="closeSpotifyPopup('spotify-memories')">Continuar explorando</button>
+            </div>
+        </div>
+    
+        <div class="spotify-overlay" id="spotify-reply">
+            <div class="spotify-popup">
+                <div class="spotify-title">Momento Spotify</div>
+                <div class="spotify-subtitle">Hay veces que necesitamos canciones para dejarnos llevar, espero te guste</div>
+                <div class="spotify-code">
+                    <img class="spotify-code-image" src="/assets/images/DamienRice.png">
+                </div>
+                <a href="https://open.spotify.com/intl-es/track/5yyRH93h4Pm6tXXYTxt7ea?si=15fa9dc7e6bc43a1" target="_blank" class="spotify-link">Abrir en Spotify</a>
+                <button class="spotify-continue" onclick="closeSpotifyPopup('spotify-reply')">Continuar</button>
+            </div>
+        </div>
+    
+        <!-- ========== GALLERY MODAL ========== -->
+        <div class="gallery-modal" id="gallery-modal">
+            <div class="gallery-modal-content">
+                <button class="gallery-modal-close" onclick="closeGalleryModal()">&times;</button>
+                <div id="gallery-modal-media"></div>
+                <div class="gallery-modal-title" id="gallery-modal-title"></div>
+            </div>
+        </div>
+    
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
@@ -1010,7 +1297,13 @@
                             // Auto-scroll the letter container
                             const container = document.querySelector('.letter-container');
                             if (container) {
-                                container.scrollTop = container.scrollHeight;
+                                requestAnimationFrame(() => {
+                                    const isNearBottom = container.scrollTop >= container.scrollHeight - container.clientHeight - 50;
+                                    if (isNearBottom || container.scrollHeight <= container.clientHeight) {
+                                        container.scrollTop = container.scrollHeight;
+                                    }
+                                });
+                                // container.scrollTop = container.scrollHeight;
                             }
                         } else {
                             clearInterval(interval);
@@ -1031,17 +1324,54 @@
         // LETTER CONTENT
         // ==========================================
         const letterContent = {
-            date: "December 15th, under a sky full of stars",
-            greeting: "My Dearest Love,",
+            date: "Marzo 7, 2026",
+            greeting: "Querida Deyi,",
             paragraphs: [
-                "From the moment you came into my life, everything changed. The colors became more vivid, the music sounded sweeter, and every ordinary moment turned into something worth remembering — simply because you were there.",
-                "I find myself thinking of you in the quiet hours, when the world falls silent and my heart speaks loudest. You are the gentle thought that lingers before sleep, and the first warmth I feel when I wake.",
-                "There are no words grand enough to capture what you mean to me, but I write this letter as a humble attempt — a small constellation of feelings pressed onto paper, hoping they reach you the way your smile reaches me: effortlessly and completely.",
-                "You have taught me that love is not just a feeling — it is a home. And in you, I have found mine. Every laugh we share, every silence we hold, every look that says what words cannot — they are all treasures I hold close to my heart.",
-                "If I could give you one thing, it would be the ability to see yourself through my eyes. Only then would you understand how truly extraordinary you are."
-            ],
-            closing: "Forever and always yours,",
-            signature: "With all my love ♥"
+                "test"
+            // "Deyi, cada palabra aqui escrita fue previamente analizada en mi cabeza, no soy fanitico de escribir en computadora cartas de amor porque siento que la tecnología nos quita el romanticisimo, pero siento que lo he hecho bien y no se van robotico, pero no creo que esto ni por un momenta venza a un buen papel y pluma",
+            //     "Deyi, te he soñado, te he soñado mucho la verdad, en ciertos escenarios somos inmensamente felices y en otros solo somos la tormenta que existe en medio de la nada, y en otros simplemente el ojo del huracán",
+            //     "Pero adoro a mi mente por siempre tenerte presente, por siempre intentar encontrart estos escenarios donde puedo fluir contigo aunque no siempre termina de la forma en la que uno espera",
+            //     "Yo se que quizas el que te envié mensajes todos los días pueda ser molesto, pero es algo que no puedo evitar, te tengo tan clavada en mi pensamiento que cada que apareces solo quiero pedir por ti, porque sea un buen dí, porque tengas una bonitda noche, o porque tu dia no sea pesado ",
+            //     "Y te he escrito algo, espero que te guste, pero quisiera en algún momento declamartelo, se titula 'El dolor de extrañarte'",
+            //     "Extrañarte es brutal",
+            //     "Es dejar que mi mente se apuñale a sí misma, recordando, volviendo a inspirarse en viejas memorias, en sonrisas que el polvo ya empieza a ocultar",
+            //     "Es pisar un piso de madera y escuchar cómo crujen al andar, de la misma forma en que esas conversaciones siguen haciendo ruido en la cabeza.",
+            //     "Es curioso pensarlo, porque incluso cuando aún no te habías ido, ya te extrañaba.",
+            //     "Y no era algún tipo de premonición ni ansiedad hacia el futuro.",
+            //     "Sabes bien que la incertidumbre y yo nunca nos hemos llevado bien.",
+            //     "Pero no era ese miedo, no era mi miedo en sí.",
+            //     "Era como añorar cada día el breve retrato de tus ojos, punzantes en mí",
+            //     "Y era querer… volver a hacerlo.",
+            //     "Extrañar probablemente sea eso: volver a querer recordar, volver a querer agarrar ese pedazo de hilo que aún sientes que tiende hacia ti.",
+            //     "Es una expresión de amor, al final.",
+            //     "",
+            //     "Porque no se puede extrañar lo que no se vivió,",
+            //     "como tampoco se puede querer lo que nunca se sintió de verdad.",
+            //     "Y por eso extrañar es una exclamación de amor.",
+            //     "Porque nace del deseo de recuperar, de volver a sentir, de comprobar que seguimos vivos al intentar revivir ese punto… ese momento en nuestras vidas en el que nos sentíamos felices.",
+            //     "Por eso, para mí, extrañar es una exclamación de amor.",
+            //     "Y aunque pienses que son solo palabras, dentro de mi química cerebral no hay forma de fingirlo.",
+            //     "Por eso, para mí, extrañarte es decirte que te quiero más de lo que alguna vez pensaste que te quería.",
+            //     "Que te sigo queriendo y por eso no te suelto",
+            //     "Porque a veces siento que el único vínculo que todavía tengo contigo…es extrañarte.",
+            //     "Antes que todo quiero que sepas que esto lo hice mucho antes de nuestra conversación de ayer, estuve trabajando en esto por algunos días para que se vea bonito.",
+            //     "Me encuentro todos los días pensando en ti, en que estarás haciendo en esas horas calladas, en tu día a día en el que quisiera poder compartir, han habido dias en los que el mundo se me ha caído encima y te he necesitado tan desesperadamente que incluso olvido que no estás, pero hay días también en los que la vida me sonrié  como si de una tragicomedia se tratase y también busco tu reflejo que ya se encuentra extinto. Eres ese pensamiento que no se va, ese que se queda rumiando hasta dormir y eres también ese primer pensamiento que siento ser feliz al iniciar el día.",
+            //     "Nunca imaginé llegar a sentir tan intenso como te siento, y es que uno no se da cuenta porque siento el amor tan presente que lo vuelve parte de si, y es para uno mismo el golpe de vuelta de realidad cuando ese amor deja de tocar a la puerta. ",
+            //     "Y no hay palabras que verdaderamente eclipsen esto, que el dolor que se siente cuando existe el frío cuando siempre hubo calor, que el vacío ya es un vecino regular y que se debe de pretender acostumbrarse a él aunque uno se resista",
+            //     "Y me resisto, me rehúso a acostumbrarme a la idea de que no estás, a la idea de no poder compartir contigo mi día, mis risas, mis tristezas, mis dramas que son tragicomedias, porque eres mi Deyi quien deseo que sea mi compañera de vida, mi amiga, mi amor, mi todo. ",
+            //     "Porque es en efecto lo que eres para mí, Deyi. Lo eres todo, eres parte de la luz que me levanta todos los días, eres esa sonrisa que se dibuja cuando digo un chiste malo, eres la mano a la que agarro en medio de la incertidumbre, eres la voz que me calma y me hace entrar en razón cuando siento un nudo de emociones en mi",
+            //     "Eres más que eso, eres alguien me invita a crecer siempre, ser mejor persona, ser una mejor versión de mi, más atenta, más paciente, más amorosa, más consciente, mas que todo consciente de usar bloqueador, humecante y retinol hahaha",
+            //     "Me has enseñado tanto, que tengo tus lecciones en mi cabeza, así como tus lugares favoritos, y tus canciones, uno pensaría que estar en USA lo haría a uno distanciarse un poco de ello, pero apenas salgo estan tocanto The Weekend, Clairo, Bruno Mars, Chapell Roan, Sabrina Carpintera, Drake. Y uno esperaba viajar para poder concentrarse en si mismo y tengo tus cacniones en toodo lugar al que vaya",
+            //     "Extraño mucho sentirme en casa cuando estaba contigo, y que se sientas lo mismo cuando estabamos juntos. En cada risa que compartimos,en que cada silencio sepulcral, en cada mirada que nos cruzabamos y que decian lo que las palabras no pueden. Ellos son los testoros que tengong guardado muy en el fondo de mi corazon.",
+            //     "Quisiera poder pedir un desea, y que puedas verte desde lo ojos en lo que te veo yo, como una diosa del Olimpo recien llegada a la tierra para saludar a unos cuantos mortales. Y que con ello entiendas la extraordinaria mujer que eres ante mis ojos.",
+            //     "Sé que tuvimos nuenstra conversación ayer y que hablamos que no tendrias energia y tiempo, asi por asi. Pero de ello queria hablar, yo sé que para ti es importante que alguien se comprometa de verdad para que tu puedas darle energia y tiempo que se requiere, por ello en el momento que estes leeyendo esta carta se deberion de haber acreditado $300 a tu cuenta del banco guayaquil, como parte de mi compromiso para arreglas las cosas entre nosotros. Solo te pido de favor que me desbloquees,y podmas conversar el domingo que ya estoy de regreso, hablariamos del valor restante para el pago de tu tarjeta de crédito y de nosotros, de como podemos trabajar en nosotros para que la historia no llegue a su fin ",
+            //     "Te pido de favor que me desbloquees del número de Ecuador, para poder poder hablar el domingo que ya estoy de regresos",
+            //     "Estuve pensando en que te podría recoger el domingo 8 de marzo, a las 18h00. Podemos ir a cenar a Carlo y Carlo como aquella vez, o a donde tu quieras lo importante es que podamos compartir un rato juntos y hablar de nosotros de lo que queremos, de lo que soñamos, de lo que no nos gusta, de las limitantes que se deben de tomar, de amistades que deben de acabar, de airtags que se deben de tragar (yo), de como podemos hacer para que esto funcione, porque yo quiero que funcione, quiero luchar por nosotros, quiero ser tu compañero de vida, quiero ser tu amigo, tu amor, tu todo. ",
+            //     "Por favor te pido, dame la oportunida de hablar las arreglar las cosas, de demostrarte que soy el hombre que mereces, de que mi amor no es solo palabras, de que estoy dispuesto a hacer lo que sea necesario para que esto funcione, porque eres mi Deyi y tienes mi corazón en tus manos. " 
+             
+        ],
+            closing: "Te quiero y te extraño, todo el día, todos los días,",
+            signature: "Con amor, Nacho"
         };
 
         // ==========================================
@@ -1066,12 +1396,35 @@
         });
 
         window.startLetterFlow = async () => {
-            // Show letter scene
-            letterScene.classList.add('visible');
-
-            // Start typing the letter
-            await typeLetter();
+             // Show Spotify popup first
+             document.getElementById('spotify-intro').classList.add('visible');
         };
+
+        // Close Spotify popup and continue to letter
+        window.closeSpotifyPopup = (popupId) => {
+            document.getElementById(popupId).classList.remove('visible');
+            
+            if (popupId === 'spotify-intro') {
+                // Show letter scene after intro music
+                setTimeout(() => {
+                    letterScene.classList.add('visible');
+                    typeLetter();
+                }, 300);
+            } else if (popupId === 'spotify-memories') {
+                // Continue with memories view
+                setTimeout(() => {
+                    galleryScene.classList.add('visible');
+                }, 300);
+            } else if (popupId === 'spotify-reply') {
+                // Continue to reply section
+                setTimeout(() => {
+                    replyScene.classList.add('visible');
+                    const textarea = document.getElementById('reply-textarea');
+                    if (textarea) textarea.focus();
+                }, 300);
+            }
+        };
+
 
         async function typeLetter() {
             const dateEl = document.getElementById('letter-date');
@@ -1099,7 +1452,7 @@
                 const bodyTyper = new Typewriter(p, 30);
                 await bodyTyper.type(letterContent.paragraphs[i]);
                 bodyTyper.removeCursor();
-                await sleep(600);
+                await sleep(800);
             }
 
             // Type closing
@@ -1123,6 +1476,11 @@
             const container = document.querySelector('.letter-container');
             setTimeout(() => {
                 container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+                setTimeout(() => {
+                    if (container.scrollTop < container.scrollHeight - container.clientHeight - 10) {
+                        container.scrollTop = container.scrollHeight;
+                    }
+                }, 500);
             }, 300);
         }
 
@@ -1136,7 +1494,8 @@
             btnToGallery.addEventListener('click', async () => {
                 letterScene.classList.remove('visible');
                 await sleep(300);
-                galleryScene.classList.add('visible');
+                // galleryScene.classList.add('visible');
+                document.getElementById('spotify-memories').classList.add('visible');
             });
         }
 
@@ -1144,9 +1503,12 @@
             btnToReply.addEventListener('click', async () => {
                 galleryScene.classList.remove('visible');
                 await sleep(300);
-                replyScene.classList.add('visible');
-                const textarea = document.getElementById('reply-textarea');
-                if (textarea) textarea.focus();
+                // replyScene.classList.add('visible');
+                // const textarea = document.getElementById('reply-textarea');
+                // if (textarea) textarea.focus();
+                
+                // Show Spotify popup for reply
+                document.getElementById('spotify-reply').classList.add('visible');
             });
         }
 
@@ -1266,6 +1628,92 @@
             this.classList.remove('visible');
         });
 
+        window.openGalleryModal = (element) => {
+            const modal = document.getElementById('gallery-modal');
+            const mediaContainer = document.getElementById('gallery-modal-media');
+            const titleElement = document.getElementById('gallery-modal-title');
+            
+            const mediaType = element.dataset.type;
+            const mediaSrc = element.dataset.src;
+            const mediaTitle = element.textContent.replace(/[📸🎬📷🎥]/g, '').trim();
+            
+            // Clear previous content
+            mediaContainer.innerHTML = '';
+            
+            if (mediaType === 'image') {
+                const img = document.createElement('img');
+                img.src = mediaSrc;
+                img.alt = mediaTitle;
+                img.onload = () => {
+                    modal.classList.add('visible');
+                };
+                img.onerror = () => {
+                    // Fallback for broken images
+                    img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2Y4ZWFkOCIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMTUwIiBmb250LWZhbWlseT0iQ29ybW9yYW50IEdhcmFtb25kLCBzZXJpZiIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzdhMzA0MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TWVtb3J5IFBob3RvPC90ZXh0Pgo8L3N2Zz4=';
+                    modal.classList.add('visible');
+                };
+                mediaContainer.appendChild(img);
+            } else if (mediaType === 'video') {
+                const video = document.createElement('video');
+                video.src = mediaSrc;
+                video.controls = true;
+                video.autoplay = false;
+                video.style.maxWidth = '100%';
+                video.style.maxHeight = '100%';
+                video.onloadeddata = () => {
+                    modal.classList.add('visible');
+                };
+                video.onerror = () => {
+                    // Fallback for broken videos
+                    const placeholder = document.createElement('div');
+                    placeholder.style.cssText = 'width:400px;height:300px;background:#f8ead8;display:flex;align-items:center;justify-content:center;border-radius:10px;color:#7a3040;font-family:Cormorant Garamond,serif;font-size:24px;';
+                    placeholder.textContent = 'Memory Video';
+                    mediaContainer.appendChild(placeholder);
+                    modal.classList.add('visible');
+                };
+                mediaContainer.appendChild(video);
+            }
+            
+            titleElement.textContent = mediaTitle;
+        };
+
+        window.closeGalleryModal = () => {
+            const modal = document.getElementById('gallery-modal');
+            const mediaContainer = document.getElementById('gallery-modal-media');
+            
+            modal.classList.remove('visible');
+            
+            // Stop any playing videos
+            const videos = mediaContainer.querySelectorAll('video');
+            videos.forEach(video => {
+                video.pause();
+                video.currentTime = 0;
+            });
+            
+            // Clear content after animation
+            setTimeout(() => {
+                mediaContainer.innerHTML = '';
+            }, 400);
+        };
+
+        // Close modal when clicking outside
+        document.getElementById('gallery-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeGalleryModal();
+            }
+        });
+
+        // ==========================================
+        // SPOTIFY POPUP FUNCTIONALITY
+        // ==========================================
+        // Close Spotify popup when clicking outside
+        document.querySelectorAll('.spotify-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeSpotifyPopup(this.id);
+                }
+            });
+        });
         // ==========================================
         // BURST HEARTS ON SEND
         // ==========================================
