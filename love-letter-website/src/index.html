@@ -1161,7 +1161,7 @@
                     <img class="spotify-code-image" src="/assets/images/AboutYou.png">
                 </img>
                 </div>
-                <a href="https://open.spotify.com/intl-es/track/3hEfpBHxgieRLz4t3kLNEg?si=b7f6f55c15d142f1" target="_blank" class="spotify-link">Abrir en spotify</a>
+                <a href="https://open.spotify.com/intl-es/track/3hEfpBHxgieRLz4t3kLNEg?si=b7f6f55c15d142f1" target="_blank" class="spotify-link" onclick="if(window.trackEvent) window.trackEvent('spotify_link_clicked', {popup_type: 'intro', song_name: 'About You', stage: 'before_letter'})">Abrir en spotify</a>
                 <button class="spotify-continue" onclick="closeSpotifyPopup('spotify-intro')">Continuar a la carta</button>
             </div>
         </div>
@@ -1173,7 +1173,7 @@
                 <div class="spotify-code">
                     <img class="spotify-code-image" src="/assets/images/SomebodyElse.png">
                 </div>
-                <a href="https://open.spotify.com/intl-es/track/4m0q0xQ2BNl9SCAGKyfiGZ?si=c39b04f571194edb" target="_blank" class="spotify-link">Abrir en spotify</a>
+                <a href="https://open.spotify.com/intl-es/track/4m0q0xQ2BNl9SCAGKyfiGZ?si=c39b04f571194edb" target="_blank" class="spotify-link" onclick="if(window.trackEvent) window.trackEvent('spotify_link_clicked', {popup_type: 'memories', song_name: 'Somebody Else', stage: 'before_gallery'})">Abrir en spotify</a>
                 <button class="spotify-continue" onclick="closeSpotifyPopup('spotify-memories')">Continuar explorando</button>
             </div>
         </div>
@@ -1185,7 +1185,7 @@
                 <div class="spotify-code">
                     <img class="spotify-code-image" src="/assets/images/DamienRice.png">
                 </div>
-                <a href="https://open.spotify.com/intl-es/track/5yyRH93h4Pm6tXXYTxt7ea?si=15fa9dc7e6bc43a1" target="_blank" class="spotify-link">Abrir en Spotify</a>
+                <a href="https://open.spotify.com/intl-es/track/5yyRH93h4Pm6tXXYTxt7ea?si=15fa9dc7e6bc43a1" target="_blank" class="spotify-link" onclick="if(window.trackEvent) window.trackEvent('spotify_link_clicked', {popup_type: 'reply', song_name: 'Damien Rice', stage: 'before_reply'})">Abrir en Spotify</a>
                 <button class="spotify-continue" onclick="closeSpotifyPopup('spotify-reply')">Continuar</button>
             </div>
         </div>
@@ -1398,10 +1398,36 @@
         window.startLetterFlow = async () => {
              // Show Spotify popup first
              document.getElementById('spotify-intro').classList.add('visible');
+             
+             // Track Spotify intro popup show
+             if (window.trackEvent) {
+                 window.trackEvent('spotify_popup_shown', {
+                     popup_type: 'intro',
+                     song_name: 'Our Song',
+                     stage: 'before_letter'
+                 });
+             }
         };
 
         // Close Spotify popup and continue to letter
         window.closeSpotifyPopup = (popupId) => {
+            // Track Spotify popup close
+            if (window.trackEvent) {
+                const popupTypes = {
+                    'spotify-intro': { type: 'intro', stage: 'before_letter' },
+                    'spotify-memories': { type: 'memories', stage: 'before_gallery' },
+                    'spotify-reply': { type: 'reply', stage: 'before_reply' }
+                };
+                
+                const popupInfo = popupTypes[popupId] || { type: 'unknown', stage: 'unknown' };
+                
+                window.trackEvent('spotify_popup_closed', {
+                    popup_type: popupInfo.type,
+                    stage: popupInfo.stage,
+                    action: 'continue_button'
+                });
+            }
+            
             document.getElementById(popupId).classList.remove('visible');
             
             if (popupId === 'spotify-intro') {
@@ -1492,15 +1518,40 @@
 
         if (btnToGallery) {
             btnToGallery.addEventListener('click', async () => {
+                // Track navigation to gallery
+                if (window.trackEvent) {
+                    window.trackEvent('navigation_to_gallery', {
+                        from: 'letter_scene',
+                        via_spotify: true
+                    });
+                }
+                
                 letterScene.classList.remove('visible');
                 await sleep(300);
                 // galleryScene.classList.add('visible');
                 document.getElementById('spotify-memories').classList.add('visible');
+                
+                // Track Spotify memories popup show
+                if (window.trackEvent) {
+                    window.trackEvent('spotify_popup_shown', {
+                        popup_type: 'memories',
+                        song_name: 'Memory Lane',
+                        stage: 'before_gallery'
+                    });
+                }
             });
         }
 
         if (btnToReply) {
             btnToReply.addEventListener('click', async () => {
+                // Track navigation to reply
+                if (window.trackEvent) {
+                    window.trackEvent('navigation_to_reply', {
+                        from: 'gallery_scene',
+                        via_spotify: true
+                    });
+                }
+                
                 galleryScene.classList.remove('visible');
                 await sleep(300);
                 // replyScene.classList.add('visible');
@@ -1509,6 +1560,15 @@
                 
                 // Show Spotify popup for reply
                 document.getElementById('spotify-reply').classList.add('visible');
+                
+                // Track Spotify reply popup show
+                if (window.trackEvent) {
+                    window.trackEvent('spotify_popup_shown', {
+                        popup_type: 'reply',
+                        song_name: 'Heart to Heart', 
+                        stage: 'before_reply'
+                    });
+                }
             });
         }
 
@@ -1637,6 +1697,16 @@
             const mediaSrc = element.dataset.src;
             const mediaTitle = element.textContent.replace(/[📸🎬📷🎥]/g, '').trim();
             
+            // Track gallery item click
+            if (window.trackEvent) {
+                window.trackEvent('gallery_item_clicked', {
+                    media_type: mediaType,
+                    media_src: mediaSrc,
+                    media_title: mediaTitle,
+                    item_position: Array.from(element.parentNode.children).indexOf(element)
+                });
+            }
+            
             // Clear previous content
             mediaContainer.innerHTML = '';
             
@@ -1680,6 +1750,13 @@
         window.closeGalleryModal = () => {
             const modal = document.getElementById('gallery-modal');
             const mediaContainer = document.getElementById('gallery-modal-media');
+            
+            // Track gallery modal close
+            if (window.trackEvent) {
+                window.trackEvent('gallery_modal_closed', {
+                    timestamp: new Date().toISOString()
+                });
+            }
             
             modal.classList.remove('visible');
             
