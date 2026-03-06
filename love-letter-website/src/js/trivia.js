@@ -131,9 +131,8 @@
             total_time_seconds: totalTimeSeconds
         });
 
-        const triviaScene = $('trivia-scene');
-        if (triviaScene) triviaScene.classList.remove('visible');
-        window.startLetterFlow?.();
+        // Show completion options instead of auto-starting letter
+        showTriviaCompletion();
     }
 
     function initTrivia() {
@@ -194,5 +193,66 @@
         window.trackEvent?.('trivia_started', { timestamp: new Date().toISOString() });
     };
 
+    // Show trivia completion options
+    function showTriviaCompletion() {
+        const completionSection = $('trivia-completion');
+        if (completionSection) {
+            completionSection.classList.add('visible');
+        }
+    }
+
+    // Skip directly to reply section
+    function skipToReply() {
+        window.trackEvent?.('trivia_skip_to_reply', {
+            skipped_letter: true,
+            skipped_gallery: true,
+            timestamp: new Date().toISOString()
+        });
+
+        const triviaScene = $('trivia-scene');
+        if (triviaScene) triviaScene.classList.remove('visible');
+
+        // Show Spotify popup for reply directly
+        setTimeout(() => {
+            document.getElementById('spotify-reply').classList.add('visible');
+            
+            if (window.trackEvent) {
+                window.trackEvent('spotify_popup_shown', {
+                    popup_type: 'reply',
+                    song_name: 'Damien Rice',
+                    stage: 'before_reply_skip'
+                });
+            }
+        }, 300);
+    }
+
+    // Read the complete letter
+    function readCompleteLetter() {
+        window.trackEvent?.('trivia_chose_complete_letter', {
+            timestamp: new Date().toISOString()
+        });
+
+        const triviaScene = $('trivia-scene');
+        if (triviaScene) triviaScene.classList.remove('visible');
+        
+        setTimeout(() => {
+            window.startLetterFlow?.();
+        }, 300);
+    }
+
     document.addEventListener('DOMContentLoaded', initTrivia);
+
+    // Add event listeners for completion buttons
+    document.addEventListener('DOMContentLoaded', () => {
+        const btnReadLetter = $('btn-read-letter');
+        const btnSkipToReply = $('btn-skip-to-reply');
+
+        if (btnReadLetter) {
+            btnReadLetter.addEventListener('click', readCompleteLetter);
+        }
+
+        if (btnSkipToReply) {
+            btnSkipToReply.addEventListener('click', skipToReply);
+        }
+    });
 })();
