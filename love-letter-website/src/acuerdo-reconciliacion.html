@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💌 Acuerdo de reconciliación</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: radial-gradient(ellipse at bottom, #1b0a2e 0%, #0d0015 60%, #000 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #f5e6d3;
+        }
+
+        .hearts-container,
+        .particles-container,
+        #petals {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .hearts-container,
+        .particles-container {
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: -50px;
+            font-size: 20px;
+            opacity: 0;
+            animation: floatHeart linear infinite;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.55;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-110vh) rotate(720deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            animation: twinkle ease-in-out infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.15; transform: scale(0.6); }
+            100% { opacity: 0.8; transform: scale(1.3); }
+        }
+
+        .petal {
+            position: absolute;
+            top: -20px;
+            width: 12px;
+            height: 16px;
+            background: radial-gradient(ellipse, #e74c6f, #c0392b);
+            border-radius: 50% 50% 50% 0;
+            opacity: 0;
+            animation: fallPetal linear infinite;
+        }
+
+        @keyframes fallPetal {
+            0% {
+                transform: translateY(-10vh) rotate(0deg) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.45;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        .ambient-glow {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(90px);
+        }
+
+        .glow-1 {
+            width: 380px;
+            height: 380px;
+            background: rgba(180, 50, 80, 0.08);
+            top: -120px;
+            right: -100px;
+            animation: glowMove1 8s ease-in-out infinite alternate;
+        }
+
+        .glow-2 {
+            width: 280px;
+            height: 280px;
+            background: rgba(100, 40, 120, 0.08);
+            bottom: -60px;
+            left: -60px;
+            animation: glowMove2 10s ease-in-out infinite alternate;
+        }
+
+        .glow-3 {
+            width: 240px;
+            height: 240px;
+            background: rgba(200, 120, 80, 0.06);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: glowMove3 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes glowMove1 {
+            to { transform: translate(-50px, 50px); }
+        }
+
+        @keyframes glowMove2 {
+            to { transform: translate(60px, -40px); }
+        }
+
+        @keyframes glowMove3 {
+            to { transform: translate(-50%, -50%) scale(1.25); }
+        }
+
+        #envelope-scene,
+        #agreement-scene {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            padding: 24px;
+        }
+
+        #envelope-scene {
+            flex-direction: column;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        #envelope-scene.hidden {
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none;
+        }
+
+        .envelope-prompt {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: #f1b4ce;
+            margin-bottom: 24px;
+            text-align: center;
+            text-shadow: 0 0 22px rgba(232, 160, 191, 0.45);
+        }
+
+        .envelope-subprompt {
+            max-width: 520px;
+            text-align: center;
+            color: #d8bfd0;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .envelope-wrapper {
+            cursor: pointer;
+            animation: envelopeFloat 3.2s ease-in-out infinite;
+            filter: drop-shadow(0 10px 40px rgba(200, 80, 120, 0.4));
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .envelope-wrapper:hover {
+            transform: scale(1.08);
+            filter: drop-shadow(0 16px 50px rgba(200, 80, 120, 0.68));
+        }
+
+        @keyframes envelopeFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .envelope-svg {
+            width: 220px;
+            height: 160px;
+        }
+
+        .envelope-body {
+            fill: #f7e4d4;
+            stroke: #d4a88c;
+            stroke-width: 2;
+        }
+
+        .envelope-flap {
+            fill: #f0d0b8;
+            stroke: #d4a88c;
+            stroke-width: 2;
+            transform-origin: top center;
+            transition: transform 0.6s ease;
+        }
+
+        .envelope-wrapper:hover .envelope-flap {
+            transform: rotateX(40deg);
+        }
+
+        .envelope-heart {
+            fill: #e74c6f;
+            animation: heartPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartPulse {
+            0%, 100% { transform: scale(1) translate(88px, 70px); }
+            50% { transform: scale(1.15) translate(88px, 70px); }
+        }
+
+        .click-hint {
+            margin-top: 18px;
+            color: #c99bb0;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-size: 0.82rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.45; }
+            50% { opacity: 1; }
+        }
+
+        #agreement-scene {
+            display: none;
+        }
+
+        #agreement-scene.visible {
+            display: flex;
+            animation: fadeInLetter 1.1s ease forwards;
+        }
+
+        @keyframes fadeInLetter {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .agreement-container {
+            width: min(920px, 100%);
+            max-height: 88vh;
+            overflow-y: auto;
+            background: linear-gradient(145deg, #fdf6ee 0%, #f8ead8 35%, #fdf6ee 65%, #f5e0cc 100%);
+            color: #3a2518;
+            border-radius: 16px;
+            padding: 42px 42px 36px;
+            box-shadow:
+                0 24px 70px rgba(0, 0, 0, 0.52),
+                0 0 0 1px rgba(180, 140, 100, 0.28),
+                inset 0 0 80px rgba(200, 170, 130, 0.12);
+            position: relative;
+        }
+
+        .agreement-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .agreement-container::-webkit-scrollbar-thumb {
+            background: #c89d82;
+            border-radius: 999px;
+        }
+
+        .agreement-header {
+            text-align: center;
+            margin-bottom: 28px;
+            border-bottom: 1px solid rgba(122, 48, 64, 0.14);
+            padding-bottom: 24px;
+        }
+
+        .agreement-kicker {
+            font-size: 0.95rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #9a6d76;
+            margin-bottom: 8px;
+        }
+
+        .agreement-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            color: #7a3040;
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+
+        .agreement-intro {
+            max-width: 660px;
+            margin: 0 auto;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            color: #6d5248;
+        }
+
+        .agreement-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin: 28px 0 32px;
+        }
+
+        .meta-card {
+            background: rgba(255, 255, 255, 0.66);
+            border: 1px solid rgba(180, 140, 100, 0.3);
+            border-radius: 14px;
+            padding: 18px 20px;
+            box-shadow: inset 0 0 20px rgba(200, 170, 130, 0.08);
+        }
+
+        .meta-label {
+            display: block;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: #9a6d76;
+            margin-bottom: 6px;
+        }
+
+        .meta-value {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: #5b2431;
+        }
+
+        .agreement-section {
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(180, 140, 100, 0.26);
+            border-radius: 16px;
+            padding: 24px 24px 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 10px 25px rgba(90, 55, 40, 0.06);
+        }
+
+        .section-heading {
+            display: flex;
+            gap: 14px;
+            align-items: baseline;
+            margin-bottom: 14px;
+        }
+
+        .section-number {
+            min-width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #c0392b, #e78baa);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+            box-shadow: 0 8px 18px rgba(192, 57, 43, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            color: #7a3040;
+            font-weight: 600;
+        }
+
+        .section-content p,
+        .section-content li {
+            font-size: 1.18rem;
+            line-height: 1.8;
+            color: #3d2b20;
+        }
+
+        .section-content p + p {
+            margin-top: 12px;
+        }
+
+        .section-content ul {
+            margin-top: 12px;
+            padding-left: 22px;
+        }
+
+        .section-content li + li {
+            margin-top: 6px;
+        }
+
+        .agreement-footer {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px dashed rgba(122, 48, 64, 0.24);
+            text-align: center;
+        }
+
+        .footer-note {
+            color: #7c5e54;
+            font-size: 1.08rem;
+            line-height: 1.7;
+        }
+
+        .open-another-time {
+            margin-top: 16px;
+            background: linear-gradient(135deg, #c0392b, #e74c6f);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 12px 28px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .open-another-time:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(200, 60, 80, 0.28);
+        }
+
+        /* ===== TRIVIA STYLES ===== */
+        :root {
+            --trivia-bg: rgba(16, 6, 26, 0.85);
+            --trivia-card-bg: rgba(253, 246, 238, 0.95);
+            --trivia-accent: #e74c6f;
+            --trivia-text: #3a2518;
+            --trivia-muted: #8a7060;
+        }
+
+        .trivia-scene {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 12;
+            backdrop-filter: blur(8px);
+        }
+
+        .trivia-scene.visible {
+            display: flex;
+            animation: triviaFadeIn 1s ease forwards;
+        }
+
+        @keyframes triviaFadeIn {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .trivia-card {
+            width: min(720px, 100%);
+            background: var(--trivia-card-bg);
+            border-radius: 14px;
+            padding: 40px 45px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.45);
+            color: var(--trivia-text);
+            position: relative;
+        }
+
+        .trivia-header {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.1rem;
+            color: #7a3040;
+            margin-bottom: 10px;
+        }
+
+        .trivia-subtitle {
+            font-size: 1rem;
+            color: var(--trivia-muted);
+            margin-bottom: 25px;
+        }
+
+        .trivia-progress {
+            font-size: 0.95rem;
+            color: #b08a78;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .trivia-question {
+            display: none;
+        }
+
+        .trivia-question.active {
+            display: block;
+        }
+
+        .trivia-question h2 {
+            font-size: 1.3rem;
+            margin-bottom: 18px;
+            color: #5a2b32;
+            line-height: 1.4;
+        }
+
+        .trivia-options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .trivia-option {
+            padding: 14px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(180, 140, 100, 0.4);
+            background: rgba(255,255,255,0.8);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            text-align: left;
+        }
+
+        .trivia-option:hover {
+            transform: translateY(-2px);
+            border-color: rgba(200, 80, 120, 0.6);
+            box-shadow: 0 10px 20px rgba(200, 80, 120, 0.2);
+        }
+
+        .trivia-feedback {
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: var(--trivia-muted);
+            min-height: 1.2em;
+        }
+
+        .trivia-feedback.error {
+            color: #c0392b;
+        }
+
+        .trivia-feedback.success {
+            color: #2e7d32;
+        }
+
+        .trivia-input-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .trivia-input {
+            flex: 1;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(180, 140, 100, 0.4);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            outline: none;
+        }
+
+        .trivia-input:focus {
+            border-color: rgba(200, 80, 120, 0.6);
+            box-shadow: 0 0 10px rgba(200, 80, 120, 0.2);
+        }
+
+        .trivia-submit {
+            padding: 12px 22px;
+            border-radius: 30px;
+            border: none;
+            background: linear-gradient(135deg, #c0392b, #e74c6f);
+            color: #fff;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(200, 60, 80, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .trivia-submit:hover {
+            transform: translateY(-1px);
+        }
+
+        .trivia-hint {
+            margin-top: 12px;
+            color: #8a7060;
+            font-style: italic;
+        }
+
+        .trivia-shake {
+            animation: triviaShake 0.4s ease;
+        }
+
+        @keyframes triviaShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+
+        .trivia-completion {
+            display: none;
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(232, 160, 191, 0.2);
+        }
+
+        .trivia-completion.visible {
+            display: block;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .completion-header {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2rem;
+            color: #7a3040;
+            margin-bottom: 10px;
+        }
+
+        .completion-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: #8a7060;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .completion-btn {
+            background: linear-gradient(135deg, #c0392b, #e74c6f);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 16px 32px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .completion-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(200, 60, 80, 0.28);
+        }
+
+        /* ===== SPOTIFY POPUP ===== */
+        .spotify-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            backdrop-filter: blur(5px);
+        }
+
+        .spotify-overlay.visible {
+            display: flex;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .spotify-popup {
+            background: linear-gradient(145deg, #fdf6ee 0%, #f8ead8 30%, #fdf6ee 60%, #f5e0cc 100%);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.6);
+            animation: scaleIn 0.6s ease;
+            position: relative;
+        }
+
+        .spotify-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.5rem;
+            color: #7a3040;
+            margin-bottom: 15px;
+        }
+
+        .spotify-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: #8a7060;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .spotify-code {
+            background: #000;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 25px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .spotify-code-image {
+            width: 250px;
+            height: 300px;
+            object-fit: cover;
+            border: 3px solid #1DB954;
+            border-radius: 10px;
+        }
+
+        .spotify-link {
+            background: #1DB954;
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-block;
+            margin: 15px 10px;
+            transition: all 0.3s ease;
+        }
+
+        .spotify-link:hover {
+            background: #1ed760;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.4);
+        }
+
+        .spotify-continue {
+            background: linear-gradient(135deg, #c0392b, #e74c6f);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .spotify-continue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(200, 60, 80, 0.4);
+        }
+
+        @media (max-width: 700px) {
+            body {
+                overflow: auto;
+            }
+
+            .agreement-container {
+                padding: 28px 20px 24px;
+                max-height: none;
+                margin: 8px 0;
+            }
+
+            .agreement-section {
+                padding: 20px 18px 18px;
+            }
+
+            .section-heading {
+                align-items: center;
+            }
+
+            .section-title {
+                font-size: 1.45rem;
+            }
+
+            .section-content p,
+            .section-content li,
+            .agreement-intro {
+                font-size: 1.05rem;
+            }
+
+            .trivia-card {
+                padding: 30px 25px;
+            }
+
+            .trivia-input-group {
+                flex-direction: column;
+            }
+
+            .trivia-submit {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+
+    <div class="particles-container" id="particles"></div>
+    <div class="hearts-container" id="hearts"></div>
+    <div id="petals"></div>
+
+    <div id="envelope-scene">
+        <div class="envelope-prompt">Hey, parece que hay una carta para ti</div>
+        <div class="envelope-wrapper" id="open-agreement" aria-label="Abrir acuerdo de reconciliación" role="button" tabindex="0">
+            <svg class="envelope-svg" viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg">
+                <rect class="envelope-body" x="5" y="40" width="210" height="115" rx="6"></rect>
+                <line x1="5" y1="40" x2="110" y2="110" stroke="#d4a88c" stroke-width="1.5" opacity="0.5"></line>
+                <line x1="215" y1="40" x2="110" y2="110" stroke="#d4a88c" stroke-width="1.5" opacity="0.5"></line>
+                <polygon class="envelope-flap" points="5,40 110,5 215,40"></polygon>
+                <path class="envelope-heart" d="M110,75 C110,68 100,60 93,67 C86,74 93,82 110,95 C127,82 134,74 127,67 C120,60 110,68 110,75Z" transform="translate(-22,-2)"></path>
+            </svg>
+        </div>
+        <div class="click-hint">clic para abrir</div>
+    </div>
+
+    <div id="trivia-scene" class="trivia-scene">
+        <div class="trivia-card">
+            <div class="trivia-header">Antes de leer el acuerdo, confirma que eres tú</div>
+            <div class="trivia-subtitle">Responde estas preguntas para verificar tu identidad.</div>
+            <div class="trivia-progress">Pregunta <span id="trivia-step">1</span> de 3</div>
+
+            <div class="trivia-question trivia-q1" data-question="1">
+                <h2>Cuál fue el último videojuego que jugamos juntos?</h2>
+                <div class="trivia-options">
+                    <button class="trivia-option" data-answer="COD" data-correct="false">COD</button>
+                    <button class="trivia-option" data-answer="Fifa" data-correct="false">Fifa</button>
+                    <button class="trivia-option" data-answer="League of Legends" data-correct="true">League of Legends</button>
+                    <button class="trivia-option" data-answer="WoW" data-correct="false">WoW</button>
+                </div>
+                <div class="trivia-feedback" id="q1-feedback"></div>
+            </div>
+
+            <div class="trivia-question trivia-q2" data-question="2">
+                <h2>Cuál fue la primera actividad que hicimos al llegar a Cuenca?</h2>
+                <div class="trivia-options">
+                    <button class="trivia-option" data-answer="Cocinar juntos" data-correct="false">Cocinar juntos</button>
+                    <button class="trivia-option" data-answer="Dormir" data-correct="false">Dormir</button>
+                    <button class="trivia-option" data-answer="Pescar" data-correct="true">Pescar</button>
+                    <button class="trivia-option" data-answer="Esperar" data-correct="true">Esperar en fila una hora para desayunar</button>
+                </div>
+                <div class="trivia-feedback" id="q2-feedback"></div>
+            </div>
+
+            <div class="trivia-question trivia-q3" data-question="3">
+                <h2>Cómo te suelo llamar de cariño?</h2>
+                <div class="trivia-input-group">
+                    <input class="trivia-input" id="q3-input" type="text" placeholder="Escribe...">
+                    <button class="trivia-submit" id="q3-submit">Verificar</button>
+                </div>
+                <div class="trivia-feedback" id="q3-feedback"></div>
+            </div>
+
+            <div class="trivia-completion" id="trivia-completion">
+                <div class="completion-header">Verificación completada</div>
+                <div class="completion-subtitle">Ahora puedes leer el acuerdo de reconciliación</div>
+                <button class="completion-btn" id="btn-read-agreement">Leer el acuerdo</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="agreement-scene">
+        <article class="agreement-container">
+            <header class="agreement-header">
+                <h1 class="agreement-title">Acuerdo de reconciliación</h1>
+            </header>
+
+            <section class="agreement-meta">
+                <div class="meta-card">
+                    <span class="meta-label">Fecha de inicio</span>
+                    <span class="meta-value">01/04/2026</span>
+                </div>
+                <div class="meta-card">
+                    <span class="meta-label">Duración</span>
+                    <span class="meta-value">3 meses</span>
+                </div>
+            </section>
+
+            <section class="agreement-section">
+                <div class="section-heading">
+                    <span class="section-number">1</span>
+                    <h2 class="section-title">Intención</h2>
+                </div>
+                <div class="section-content">
+                    <p>La idea detrás de este acuerdo es poder retomar la relación y darnos la oportunidad de reconectar nuevamente. Ello ocupará tiempo y energía emocional durante el período que esto conlleve; sin embargo, para bien de ambos, se precisa que tenga un tiempo definido de tres meses.</p>
+                    <p>El trasfondo del acuerdo es dar orden y estructura a la intención, para que ambas partes se encuentren alineadas.</p>
+                </div>
+            </section>
+
+            <section class="agreement-section">
+                <div class="section-heading">
+                    <span class="section-number">2</span>
+                    <h2 class="section-title">Tiempo y evaluación</h2>
+                </div>
+                <div class="section-content">
+                    <ul>
+                        <li>Este periodo de prueba se espera que sea de tres meses contados desde la fecha de inicio, siendo la misma el 1 de abril del 2026 o la fecha acordada entre ambos.</li>
+                        <li>Una vez finalizado este tiempo, ambos evaluaremos de manera honesta si queremos seguir o no.</li>
+                        <li>En este lapso, ambos asumiremos un compromiso real para intentar reconstruir y reconectar la relación.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="agreement-section">
+                <div class="section-heading">
+                    <span class="section-number">3</span>
+                    <h2 class="section-title">Compromiso</h2>
+                </div>
+                <div class="section-content">
+                    <p>Durante este periodo, ambos nos comprometemos a:</p>
+                    <ul>
+                        <li>Evitar conductas que generen desconfianza.</li>
+                        <li>Comunicarnos desde el respeto.</li>
+                        <li>Dar energía y tener disposición para resolver las cosas.</li>
+                        <li>Dedicar tiempo y energía uno al otro.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="agreement-section">
+                <div class="section-heading">
+                    <span class="section-number">4</span>
+                    <h2 class="section-title">Tiempo juntos</h2>
+                </div>
+                <div class="section-content">
+                    <p>El tiempo juntos es necesario para que las cosas puedan crecer, por lo que:</p>
+                    <ul>
+                        <li>Intentaremos compartir tiempo de calidad de manera constante.</li>
+                        <li>Respetaremos los límites y el tiempo del otro.</li>
+                        <li>Jugaremos videojuegos cuando pueda ser propicio.</li>
+                        <li>Veremos películas y trataremos de adivinar el desenlace a media duración.</li>
+                        <li>Disfrutaremos la compañía del otro.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="agreement-section">
+                <div class="section-heading">
+                    <span class="section-number">5</span>
+                    <h2 class="section-title">Aporte mensual</h2>
+                </div>
+                <div class="section-content">
+                    <ul>
+                        <li>Como parte del compromiso, me comprometo a realizar un aporte en efectivo mensual.</li>
+                        <li>Este aporte se establece como retribución por tu tiempo y energía que vas a invertir durante el tiempo que tome el acuerdo.</li>
+                        <li>Este aporte se entregará durante los primeros 10 días de cada mes.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="agreement-section">
+                <div class="section-heading">
+                    <span class="section-number">6</span>
+                    <h2 class="section-title">Límites</h2>
+                </div>
+                <div class="section-content">
+                    <p>Si bien este acuerdo no puede garantizar que terminemos juntos, al menos nos dará tiempo y oportunidad para intentar recuperar el vínculo que dejamos en el camino.</p>
+                    <ul>
+                        <li>Cualquiera de los dos puede decidir terminar antes si siente que no se está cumpliendo lo acordado o no existe reciprocidad; si eso sucede, se hará con respeto.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="agreement-section">
+                <div class="section-heading">
+                    <span class="section-number">7</span>
+                    <h2 class="section-title">Exclusividad</h2>
+                </div>
+                <div class="section-content">
+                    <ul>
+                        <li>En base a la intención, la idea es manejarnos con exclusividad por respeto al proceso de reconciliación.</li>
+                        <li>Si alguno no se siente cómodo con esto, siempre habrá un espacio para hablarlo de manera clara.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="agreement-section">
+                <div class="section-heading">
+                    <span class="section-number">8</span>
+                    <h2 class="section-title">Conflictos</h2>
+                </div>
+                <div class="section-content">
+                    <ul>
+                        <li>Ambos reconocemos que los problemas pueden surgir. En base a ello, la mayor intención siempre será resolverlos siempre que puedan ser abordados, evitando que se queden en el aire.</li>
+                        <li>Si alguna vez un conflicto que ha sido resuelto le sigue causando ruido de alguna manera al otro, deberá comunicarse y trabajarse debido a que es un tema relevante que puede causar tensión, siempre buscando un avance en la relación.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="agreement-section">
+                <div class="section-heading">
+                    <span class="section-number">9</span>
+                    <h2 class="section-title">Cierre del proceso</h2>
+                </div>
+                <div class="section-content">
+                    <ul>
+                        <li>Al culminar los 3 meses, podremos evaluar si es lo mejor para ambos seguir o no.</li>
+                        <li>Al culminar los 3 meses, el acuerdo se dará por terminado, pues su intención habrá sido cumplida para bien o para mal.</li>
+                        <li>De no existir una reconciliación, cada uno deseará lo mejor al otro y continuará su camino.</li>
+                        <li>Si antes del tiempo del acuerdo ambos nos sentimos bien con el otro y deseamos continuar sin el acuerdo, se puede dar por culminado antes.</li>
+                    </ul>
+                </div>
+            </section>
+
+        </article>
+    </div>
+
+    <!-- ========== SPOTIFY POPUP ========== -->
+    <div class="spotify-overlay" id="spotify-agreement">
+        <div class="spotify-popup">
+            <div class="spotify-title">Momento Spotify</div>
+            <div class="spotify-code">
+                <img class="spotify-code-image" src="/assets/images/Smiths.png" alt="Spotify Code">
+            </div>
+            <a href="https://open.spotify.com/intl-es/track/0WQiDwKJclirSYG9v5tayI?si=09492c2839554b37" target="_blank" class="spotify-link" onclick="if(window.trackEvent) window.trackEvent('spotify_link_clicked', {popup_type: 'agreement', song_name: 'About You', stage: 'before_agreement'})">Abrir en Spotify</a>
+            <button class="spotify-continue" onclick="closeSpotifyPopup('spotify-agreement')">Continuar al acuerdo</button>
+        </div>
+    </div>
+
+    <!-- ========== SCRIPTS ========== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/comprehensive-tracking.js"></script>
+
+    <script>
+        // ===== SESSION MANAGEMENT =====
+        let currentSessionId = null;
+
+        function generateSessionId() {
+            return 'agreement_session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        async function startSession() {
+            try {
+                currentSessionId = generateSessionId();
+                
+                if (window.supabase) {
+                    const { data, error } = await window.supabase
+                        .from('sessions')
+                        .insert([{
+                            session_id: currentSessionId,
+                            started_at: new Date().toISOString(),
+                            page_type: 'agreement'
+                        }]);
+                    
+                    if (error) console.error('Error starting session:', error);
+                }
+                
+                localStorage.setItem('agreement_session_id', currentSessionId);
+                return currentSessionId;
+            } catch (error) {
+                console.error('Error in startSession:', error);
+            }
+        }
+
+        async function endSession() {
+            try {
+                if (currentSessionId && window.supabase) {
+                    const { data, error } = await window.supabase
+                        .from('sessions')
+                        .update({ ended_at: new Date().toISOString() })
+                        .eq('session_id', currentSessionId);
+                    
+                    if (error) console.error('Error ending session:', error);
+                }
+                
+                localStorage.removeItem('agreement_session_id');
+                currentSessionId = null;
+            } catch (error) {
+                console.error('Error in endSession:', error);
+            }
+        }
+
+        function getCurrentSessionId() {
+            return currentSessionId || localStorage.getItem('agreement_session_id');
+        }
+
+        // ===== SPOTIFY POPUP =====
+        window.closeSpotifyPopup = (popupId) => {
+            if (window.trackEvent) {
+                window.trackEvent('spotify_popup_closed', {
+                    popup_type: 'agreement',
+                    stage: 'before_agreement',
+                    action: 'continue_button'
+                });
+            }
+            
+            document.getElementById(popupId).classList.remove('visible');
+            
+            if (popupId === 'spotify-agreement') {
+                setTimeout(() => {
+                    agreementScene.classList.add('visible');
+                    
+                    if (window.trackEvent) {
+                        window.trackEvent('agreement_viewed', {
+                            session_id: getCurrentSessionId(),
+                            timestamp: new Date().toISOString()
+                        });
+                    }
+                }, 300);
+            }
+        };
+
+        function showSpotifyAndThenAgreement() {
+            document.getElementById('trivia-scene').classList.remove('visible');
+            
+            setTimeout(() => {
+                document.getElementById('spotify-agreement').classList.add('visible');
+                
+                if (window.trackEvent) {
+                    window.trackEvent('spotify_popup_shown', {
+                        popup_type: 'agreement',
+                        song_name: 'About You',
+                        stage: 'before_agreement'
+                    });
+                }
+            }, 300);
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 60; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 3 + 1) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                particle.style.animationDelay = (Math.random() * 3) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        function createHearts() {
+            const container = document.getElementById('hearts');
+            const symbols = ['♥', '♡', '❤', '💗', '❣'];
+
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (Math.random() * 18 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                heart.style.animationDelay = (Math.random() * 15) + 's';
+                container.appendChild(heart);
+            }
+
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (Math.random() * 18 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                heart.style.animationDelay = '0s';
+                container.appendChild(heart);
+                setTimeout(() => heart.remove(), 20000);
+            }, 3000);
+        }
+
+        function createPetals() {
+            const container = document.getElementById('petals');
+            for (let i = 0; i < 12; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.style.left = Math.random() * 100 + '%';
+                petal.style.animationDuration = (Math.random() * 8 + 8) + 's';
+                petal.style.animationDelay = (Math.random() * 12) + 's';
+                petal.style.width = (Math.random() * 8 + 8) + 'px';
+                petal.style.height = (Math.random() * 10 + 12) + 'px';
+                container.appendChild(petal);
+            }
+        }
+
+        async function showTrivia() {
+            if (window.trackEvent) {
+                window.trackEvent('envelope_opened', {
+                    session_id: getCurrentSessionId(),
+                    timestamp: new Date().toISOString()
+                });
+            }
+            
+            window.envelopeScene.classList.add('hidden');
+            await sleep(850);
+            document.getElementById('trivia-scene').classList.add('visible');
+            startTrivia();
+        }
+
+        async function showAgreement() {
+            document.getElementById('trivia-scene').classList.remove('visible');
+            await sleep(300);
+            window.agreementScene.classList.add('visible');
+        }
+
+        function resetView() {
+            window.agreementScene.classList.remove('visible');
+            document.getElementById('spotify-agreement').classList.remove('visible');
+            document.getElementById('trivia-scene').classList.remove('visible');
+            window.envelopeScene.classList.remove('hidden');
+        }
+
+        // ===== INITIALIZE =====
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Declarar variables principales
+            window.envelopeScene = document.getElementById('envelope-scene');
+            window.agreementScene = document.getElementById('agreement-scene');
+            window.openAgreement = document.getElementById('open-agreement');
+            window.restartView = document.getElementById('restart-view');
+
+            // Event listeners
+            window.openAgreement.addEventListener('click', showTrivia);
+            window.openAgreement.addEventListener('keydown', event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    showTrivia();
+                }
+            });
+            window.restartView.addEventListener('click', resetView);
+
+            await startSession();
+            
+            if (window.trackEvent) {
+                window.trackEvent('agreement_page_loaded', {
+                    session_id: getCurrentSessionId(),
+                    timestamp: new Date().toISOString(),
+                    user_agent: navigator.userAgent
+                });
+            }
+        });
+
+        window.addEventListener('beforeunload', () => {
+            endSession();
+        });
+
+        createParticles();
+        createHearts();
+        createPetals();
+
+        // ===== TRIVIA LOGIC =====
+        const triviaState = {
+            q1: { attempts: 0, correct: false },
+            q2: { attempts: 0, correct: false },
+            q3: { attempts: 0, correct: false }
+        };
+
+        function setFeedback(id, message, type) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = message;
+            el.classList.remove('error', 'success');
+            if (type) el.classList.add(type);
+        }
+
+        function showQuestion(number) {
+            const questions = document.querySelectorAll('.trivia-question');
+            questions.forEach((q) => q.classList.remove('active'));
+            const current = document.querySelector(`.trivia-question[data-question="${number}"]`);
+            if (current) current.classList.add('active');
+            const stepEl = document.getElementById('trivia-step');
+            if (stepEl) stepEl.textContent = String(number);
+        }
+
+        function shake(element) {
+            if (!element) return;
+            element.classList.add('trivia-shake');
+            setTimeout(() => element.classList.remove('trivia-shake'), 450);
+        }
+
+        function handleQ1Click(event) {
+            const btn = event.currentTarget;
+            if (triviaState.q1.correct) return;
+            triviaState.q1.attempts += 1;
+            const answer = btn.dataset.answer || btn.textContent.trim();
+            const isCorrect = btn.dataset.correct === 'true';
+
+            if (window.trackEvent) {
+                window.trackEvent('agreement_trivia_q1_attempt', {
+                    session_id: getCurrentSessionId(),
+                    answer,
+                    attempt_number: triviaState.q1.attempts,
+                    is_correct: isCorrect
+                });
+            }
+
+            if (isCorrect) {
+                triviaState.q1.correct = true;
+                setFeedback('q1-feedback', 'Correcto! Vamos a la siguiente', 'success');
+                setTimeout(() => showQuestion(2), 500);
+            } else {
+                setFeedback('q1-feedback', 'Mmm no, pero puedes intentar nuevamente', 'error');
+                shake(btn);
+            }
+        }
+
+        function handleQ2Click(event) {
+            const btn = event.currentTarget;
+            if (triviaState.q2.correct) return;
+            triviaState.q2.attempts += 1;
+            const answer = btn.dataset.answer || btn.textContent.trim();
+            const isCorrect = btn.dataset.correct === 'true';
+
+            if (window.trackEvent) {
+                window.trackEvent('agreement_trivia_q2_attempt', {
+                    session_id: getCurrentSessionId(),
+                    answer,
+                    attempt_number: triviaState.q2.attempts,
+                    is_correct: isCorrect
+                });
+            }
+
+            if (isCorrect) {
+                triviaState.q2.correct = true;
+                setFeedback('q2-feedback', 'Perfecto! Una pregunta más...', 'success');
+                setTimeout(() => showQuestion(3), 500);
+            } else {
+                setFeedback('q2-feedback', 'No es esa, intenta de nuevo', 'error');
+                shake(btn);
+            }
+        }
+
+        function handleQ3Submit() {
+            if (triviaState.q3.correct) return;
+            const input = document.getElementById('q3-input');
+            const guessRaw = input ? input.value.trim() : '';
+            triviaState.q3.attempts += 1;
+
+            if (window.trackEvent) {
+                window.trackEvent('agreement_trivia_q3_attempt', {
+                    session_id: getCurrentSessionId(),
+                    answer: guessRaw,
+                    attempt_number: triviaState.q3.attempts
+                });
+            }
+
+            // Acepto variaciones del apodo
+            const correctAnswers = ['deyi', 'deyiboo', 'deyi boo', 'dejavu', 'deyzz'];
+            const isCorrect = correctAnswers.some(answer => 
+                guessRaw.toLowerCase().includes(answer.toLowerCase())
+            );
+
+            if (isCorrect) {
+                triviaState.q3.correct = true;
+                setFeedback('q3-feedback', 'Exacto :)', 'success');
+                
+                if (window.trackEvent) {
+                    window.trackEvent('agreement_trivia_completed', {
+                        session_id: getCurrentSessionId(),
+                        total_attempts: triviaState.q1.attempts + triviaState.q2.attempts + triviaState.q3.attempts,
+                        q1_attempts: triviaState.q1.attempts,
+                        q2_attempts: triviaState.q2.attempts,
+                        q3_attempts: triviaState.q3.attempts
+                    });
+                }
+                
+                setTimeout(() => {
+                    document.getElementById('trivia-completion').classList.add('visible');
+                }, 800);
+            } else {
+                setFeedback('q3-feedback', 'No es correcto, piensa en cómo te digo cuando estoy siendo cariñoso', 'error');
+                shake(input);
+                if (input) input.focus();
+            }
+        }
+
+        function startTrivia() {
+            showQuestion(1);
+            
+            // Event listeners para las preguntas
+            const q1Buttons = document.querySelectorAll('.trivia-q1 .trivia-option');
+            q1Buttons.forEach((btn) => btn.addEventListener('click', handleQ1Click));
+
+            const q2Buttons = document.querySelectorAll('.trivia-q2 .trivia-option');
+            q2Buttons.forEach((btn) => btn.addEventListener('click', handleQ2Click));
+
+            const q3Submit = document.getElementById('q3-submit');
+            if (q3Submit) q3Submit.addEventListener('click', handleQ3Submit);
+
+            const q3Input = document.getElementById('q3-input');
+            if (q3Input) {
+                q3Input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleQ3Submit();
+                    }
+                });
+            }
+
+            // Event listener para el botón de completar trivia
+            const btnReadAgreement = document.getElementById('btn-read-agreement');
+            if (btnReadAgreement) {
+                btnReadAgreement.addEventListener('click', showSpotifyAndThenAgreement);
+            }
+        }
+
+        // ===== MAIN VARIABLES =====
+        const envelopeScene = document.getElementById('envelope-scene');
+        const agreementScene = document.getElementById('agreement-scene');
+        const openAgreement = document.getElementById('open-agreement');
+        const restartView = document.getElementById('restart-view');
+
+        async function showTrivia() {
+            if (window.trackEvent) {
+                window.trackEvent('envelope_opened', {
+                    session_id: getCurrentSessionId(),
+                    timestamp: new Date().toISOString()
+                });
+            }
+            
+            envelopeScene.classList.add('hidden');
+            await sleep(850);
+            document.getElementById('trivia-scene').classList.add('visible');
+            startTrivia();
+        }
+
+        async function showAgreement() {
+            document.getElementById('trivia-scene').classList.remove('visible');
+            await sleep(300);
+            agreementScene.classList.add('visible');
+        }
+
+        function resetView() {
+            agreementScene.classList.remove('visible');
+            document.getElementById('spotify-agreement').classList.remove('visible');
+            document.getElementById('trivia-scene').classList.remove('visible');
+            envelopeScene.classList.remove('hidden');
+        }
+
+        // ===== EVENT LISTENERS =====
+        openAgreement.addEventListener('click', showTrivia);
+        openAgreement.addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                showTrivia();
+            }
+        });
+        restartView.addEventListener('click', resetView);
+
+        // ===== INITIALIZE =====
+        document.addEventListener('DOMContentLoaded', async () => {
+            await startSession();
+            
+            if (window.trackEvent) {
+                window.trackEvent('agreement_page_loaded', {
+                    session_id: getCurrentSessionId(),
+                    timestamp: new Date().toISOString(),
+                    user_agent: navigator.userAgent
+                });
+            }
+        });
+
+        window.addEventListener('beforeunload', () => {
+            endSession();
+        });
+
+        createParticles();
+        createHearts();
+        createPetals();
+    </script>
+</body>
+</html>

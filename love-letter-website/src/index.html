@@ -1110,7 +1110,7 @@
 
     <!-- ========== ENVELOPE SCENE ========== -->
     <div id="envelope-scene">
-        <div class="envelope-prompt">Hey you Deyiboo, tienes una carta...</div>
+        <div class="envelope-prompt">Hey you Deyiboo, tienes algo importante que leer...</div>
         <div class="envelope-wrapper" id="envelope-btn">
             <svg class="envelope-svg" viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg">
                 <!-- Envelope body -->
@@ -1579,6 +1579,7 @@
         // ==========================================
         // MAIN LOGIC
         // ==========================================
+        window.location.href = 'acuerdo-reconciliacion.html';
         const envelopeScene = document.getElementById('envelope-scene');
         const letterScene = document.getElementById('letter-scene');
         const galleryScene = document.getElementById('gallery-scene');
@@ -1607,14 +1608,23 @@
         });
 
         envelopeBtn.addEventListener('click', async () => {
+            // Track envelope click
+            if (window.trackEvent) {
+                window.trackEvent('envelope_opened_redirect', {
+                    session_id: getCurrentSessionId(),
+                    timestamp: new Date().toISOString(),
+                    redirect_to: 'agreement'
+                });
+            }
+
             // Animate envelope out
             envelopeScene.classList.add('hidden');
 
             // Wait for transition
             await sleep(900);
 
-            // Show trivia
-            window.startTrivia?.();
+            // Redirect to agreement page
+            window.location.href = 'acuerdo-reconciliacion.html';
         });
 
         window.startLetterFlow = async () => {
