@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>💌 Acuerdo de reconciliación</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
     <style>
@@ -767,14 +767,33 @@
         }
 
         @media (max-width: 700px) {
-            body {
-                overflow: auto;
+            html, body {
+                overflow: auto !important;
+                overflow-x: hidden !important;
+                overflow-y: auto !important;
+                min-height: 100vh;
+                height: auto;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: auto;
+                scroll-behavior: smooth;
+                position: relative !important;
+            }
+
+            #envelope-scene,
+            #agreement-scene {
+                position: static;
+                min-height: 100vh;
+                height: auto;
+                overflow: visible;
             }
 
             .agreement-container {
                 padding: 28px 20px 24px;
                 max-height: none;
                 margin: 8px 0;
+                width: 100%;
+                height: auto;
+                overflow: visible;
             }
 
             .agreement-section {
@@ -805,6 +824,38 @@
 
             .trivia-submit {
                 width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .agreement-container {
+                padding: 20px 15px;
+                margin: 5px;
+                border-radius: 12px;
+            }
+
+            .agreement-title {
+                font-size: 2.5rem;
+            }
+
+            .section-content p,
+            .section-content li {
+                font-size: 1rem;
+                line-height: 1.6;
+            }
+
+            .meta-card {
+                padding: 15px;
+            }
+
+            .envelope-prompt {
+                font-size: 1.8rem;
+                padding: 0 20px;
+            }
+
+            .trivia-card {
+                padding: 25px 20px;
+                margin: 10px;
             }
         }
     </style>
